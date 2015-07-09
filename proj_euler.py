@@ -164,6 +164,36 @@ def base_repr(n,b):
     n /= b
   return d
 
+
+def arithmetic(a,d,k):
+ '''
+ INPUTS:
+ a -- starting member of arithmetic progression
+ d -- difference between consecutive terms
+ k -- number of terms
+ 
+ RETURN:
+ sum of arithmetic progression
+ '''
+ return (k*(2*a+d*(k-1))) / 2
+
+#Generate all divisors of n given its prime factorization
+def divisors(factors):
+    nfactors = len(factors)
+    f = [0] * nfactors
+    while True:
+        yield reduce(lambda x, y: x*y, [factors[x][0]**f[x] for x in range(nfactors)], 1)
+        i = 0
+        while True:
+            f[i] += 1
+            if f[i] <= factors[i][1]:
+                break
+            f[i] = 0
+            i += 1
+            if i >= nfactors:
+                return  
+
+
 def isqrt(n):
     x = n
     y = (x + 1) // 2

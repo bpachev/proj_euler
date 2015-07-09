@@ -16,6 +16,23 @@ unsigned long long int mod_pow(unsigned long long int base, unsigned long long i
     return result;
 }
 
+//signed mod pow
+LL smod_pow(LL base, LL exp, LL mod)
+{
+    LL result = 1;
+    while (exp)
+    {
+        if (exp % 2) 
+        {
+          result = (result * base) % mod;
+        }
+        exp = exp / 2;
+        base = (base * base) % mod;
+    }
+
+    return result;
+}
+
 long long int isqrt(long long int n)
 {
     long long int x = n;
@@ -28,6 +45,14 @@ long long int isqrt(long long int n)
     return x;
 }
 
+
+LL modinv(LL n, LL mod)
+{
+  LL s,t;
+  LL d = EEA(n,mod,&s,&t);
+  if (d != 1) printf("WARNING: %lld and %lld are not coprime, and the modular inverse does not exist.\n",n,mod);
+  return s % mod;
+}
 
 LL EEA(LL a, LL b,LL * s_res,LL * t_res)
 {
@@ -78,6 +103,8 @@ LL EEA(LL a, LL b,LL * s_res,LL * t_res)
   
   return r_curr;
 }
+
+
 
 LL big_gcd(LL a, LL b)
 {
