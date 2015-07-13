@@ -1,6 +1,6 @@
 #include "primes.h"
 
-#define CAP 1000000
+#define CAP 8000000
 #define NUMP 500500
 
 typedef unsigned long long int ULL;
@@ -51,7 +51,7 @@ int main()
         cand = j;
       }
     }
-    if (cand == primes[curr_len]) curr_len++;
+    if (cand == curr_len) curr_len++;
 //    accum = 
   }
   

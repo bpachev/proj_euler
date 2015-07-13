@@ -102,6 +102,12 @@ def MillerRabin(n):
 
   return 1
 
+def is_prime(n,cap,mask):
+  if n <= cap:
+    return mask[n]
+  else:
+    return MillerRabin(n)
+
 #is are a and b permutations of one another?
 def permu(a,b):
   d1 = map(int,list(str(a)))
@@ -138,6 +144,19 @@ def primes_and_mask(n):
         mask[j] = 0
         j += i
   return primes, mask
+
+def mark_primes(n):
+  mask = np.ones(n + 1)
+  mask[0] = 0
+  mask[1] = 0
+  for i in xrange(2,n+1):
+    if mask[i]:
+      j = i*i
+      while j <= n:
+        mask[j] = 0
+        j += i
+  return mask
+
 
 def egcd(a, b):
     if a == 0:
