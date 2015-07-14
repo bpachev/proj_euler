@@ -171,6 +171,12 @@ int bin_search(int*a,int l, int u,int n)
 }
 
 
+int digit_root(int n)
+{
+  if (n < 10) return n;
+  else return digit_root(digit_sum(n,10));
+}
+
 int digit_sum(int n, int base)
 {
   int s = 0;
@@ -181,6 +187,13 @@ int digit_sum(int n, int base)
   }
   return s;
 }
+
+LL big_digit_root(LL n)
+{
+  if (n < 10) return n;
+  else return big_digit_root(big_digit_sum(n,10LL));
+}
+
 
 LL big_digit_sum(LL n, LL base)
 {
