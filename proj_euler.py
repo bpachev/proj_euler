@@ -213,6 +213,35 @@ def divisors(factors):
                 return  
 
 
+def HarshadGen(a,c,mul=1,exact=True):
+ '''
+ ARGS: a,c
+ a -- an array of natural numbers
+ c -- a cap
+ Generates all numbers that are divisible by all of the members of a, and less than cap
+ Assumes the elements of a are coprime (otherwise duplicates will occur)
+ TODO: if exact is set to False, then allow for numbers divisible by a subset of a, but not all members.
+ I.E if a=(2,3,5) then with exact=False, 6 is allowed, but not if exact=True  
+ '''
+ if exact:
+  p=1
+  for x in a:
+   p*=x
+  for y in HarshadGen(a,c/p,p,False):
+    yield y
+  
+ else:
+  yield mul
+  for i,x in enumerate(a):
+    if x > c:
+     break
+    e = x
+    while e <= c:
+     for y in HarshadGen(a[i+1:],c/e,mul*e,False):
+      yield y
+     e*=x
+ 
+
 def isqrt(n):
     x = n
     y = (x + 1) // 2
