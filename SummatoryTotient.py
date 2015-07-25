@@ -43,7 +43,7 @@ class TotientSum:
  def Sum(self,n,k=1):
    if n < self.cache_size:
      return self.sCache[n]
-   if k < self.maxK and self.kCache[k]:
+   if k <= self.maxK and self.kCache[k]:
      return self.kCache[k]
    
    s = self.g(n,self.mod)
@@ -55,7 +55,7 @@ class TotientSum:
     s = (s - self.fSum(div,div_next,self.mod) * self.Sum(n/div,k*div) ) % self.mod
     div = div_next
     q = n/div_next
-   if k < self.maxK:
+   if k <= self.maxK:
     self.kCache[k] = s
    return s
 
@@ -65,9 +65,8 @@ class TotientSum:
   '''
   
   s = 0
-  for i in xrange(start,self.maxK+1):
+  for i in xrange(start,self.cap/self.maxK+1):
     s = ( s + (w(self.cap/i)%self.mod) * (self.Sum(i)-self.Sum(i-1))) % self.mod
-    print s,i
   
   for k in xrange(1,self.maxK):
     s = (s + (w(k)%self.mod) * (self.Sum(self.cap/k,k) - self.Sum(self.cap/(k+1),k+1))) % self.mod
