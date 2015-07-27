@@ -1,4 +1,5 @@
 import numpy as np
+from fractions import gcd
 pcap = 10**7
 sq=int(pcap**.5)
 
@@ -12,14 +13,14 @@ def poly_sum(k,i):
  elif k==1:
   return i*(i+1)/2
  elif k==2:
-  return i*(i+1)*(2*i+1)/6
+  return (i*(i+1)*(2*i+1))/6
 
 def G(n):
  global table
  s = 0
  q,r = divmod(n,12)
  for j in xrange(12):
-  if j <= r and j:
+  if j <= r:
    i = q
   else:
    i = q-1 
@@ -44,7 +45,7 @@ def F(n,k=1):
  while q >= 1:
    r = n % div
    div_next = div + r/q + 1
-   s = s - F(n/div,k*div)
+   s = s - (div_next-div) * F(n/div,k*div)
    div = div_next
    q = n/div_next
  
@@ -53,5 +54,26 @@ def F(n,k=1):
  if n <= sq:
   c2[n]=s
  return s
-#print F(pcap),G(pcap)
+ 
+def f_slow(n):
+ s = 0
+ for c in xrange (1,n):
+   for b in xrange(1,c+1):
+     for a in xrange(1,b+1):
+      if a+b+c<=n and c<a+b and gcd(a,gcd(b,c))==1:
+        s += 1
+ return s
+
+def g_slow(n):
+ s = 0
+ for c in xrange (1,n):
+   for b in xrange(1,c+1):
+     for a in xrange(1,b+1):
+      if a+b+c<=n and c<a+b:
+        s += 1
+ return s
+ 
+ 
+#print F(pcap),G(pcap),f_slow(pcap),g_slow(pcap)
 print F(pcap)
+
