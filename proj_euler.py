@@ -196,6 +196,22 @@ def arithmetic(a,d,k):
  '''
  return (k*(2*a+d*(k-1))) / 2
 
+def factorise(n,primes):
+  factors = []
+  for p in primes:
+   if p < n:
+    if n % p==0:
+     e = 0
+     while n %p==0:
+      n /= p
+      e += 1
+     factors.append([p,e])
+   else:
+    break
+  if n > 1:
+   factors[n] = 1
+  return factors
+
 #Generate all divisors of n given its prime factorization
 def divisors(factors):
     nfactors = len(factors)
@@ -212,6 +228,22 @@ def divisors(factors):
             if i >= nfactors:
                 return  
 
+def tot_fill(n):
+  tot = np.arange(n,dtype=np.int64)
+  tot[1] = 1
+  for i in xrange(2,n):
+   if tot[i] == i:
+    for j in xrange(i,n,i):
+     tot[j] = tot[j] - tot[j]/i
+  return tot
+
+def test_cores(l):
+ t = 1
+ n = 1
+ for p in l:
+   t *= (p-1)
+   n *= p
+ return ((t-1) % (n - t) == 0)
 
 def HarshadGen(a,c,mul=1,exact=True):
  '''
