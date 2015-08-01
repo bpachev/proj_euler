@@ -71,10 +71,10 @@ def MillerRabin(n):
   '''
   For n < 341,550,071,728,321, this is a deterministic primality test
   '''
+  n = int(n)
   if n == 1:
     return 0
-
-  primes =  [2, 3, 5, 7, 11, 13, 17]
+  primes =  [2, 3, 5, 7, 11, 13, 17,37]
   for p in primes:
     if n == p:
       return 1
@@ -92,12 +92,12 @@ def MillerRabin(n):
       if x == 1 or x == n-1:
         continue
       for i in xrange(s-1):
-        x = x*x % n
+        x = pow(x,2,n)
         if x == n-1:
           break
         if x == 1:
           return 0
-      if not x*x % n == 1:
+      if not x*x%n == 1:
         return 0
 
   return 1
@@ -263,6 +263,7 @@ def shanks_div(n):
     else:
      k += 1
     if k > n:
+      print MillerRabin(n),n
       raise Exception("Could not find a suitable multiple k in shanks_div.")
  
 def shanks_trial(n,k):
@@ -283,6 +284,12 @@ def shanks_trial(n,k):
      Q1 = (k*n-P*P)/Q0
      break
    i+=1
+   if Q1 == 0:
+    print n,k,Q1,Q0,P,sq,i
+    if n%P==0:
+     return P 
+    else:
+     return 1
    b = (sq+P)/Q1
    P_new = b*Q1 - P
    Q_new = Q0 + b*(P-P_new)
@@ -342,6 +349,14 @@ def tot_fill(n):
     for j in xrange(i,n,i):
      tot[j] = tot[j] - tot[j]/i
   return tot
+
+#sieve on the sum of divisors
+def sofd_fill(n):
+  d = np.ones(n,dtype=np.int64)
+  for i in xrange(2,n):
+    for j in xrange(i,n,i):
+      d[j] += i
+  return d
 
 def test_cores(l):
  t = 1
