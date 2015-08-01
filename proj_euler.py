@@ -168,6 +168,16 @@ def egcd(a, b):
 def gcd(a,b):
   return a if not b else gcd(b,a%b)
 
+
+def isqrt(n):
+    x = n
+    y = (x + 1) // 2
+    while y < x:
+        x = y
+        y = (x + n // x) // 2
+    return x
+
+
 def prime_fact_ord(p,n):
   o = 0
   a = p
@@ -196,7 +206,103 @@ def arithmetic(a,d,k):
  '''
  return (k*(2*a+d*(k-1))) / 2
 
-def factorise(n,primes):
+def comb_factors(f1,f2):
+ for f in f2:
+   if f in f1:
+     f1[f] += f2[f]
+   else:
+     f1[f] = f2[f]
+
+def shanks_factorize(N,primes=None):
+  n = N
+  factors = {}
+  if primes is not None:
+   cap = int(n**.25)
+   for p in primes:    
+    if p > cap:
+     break
+    if p < n:
+     if n % p==0:
+      e = 0
+      while n %p==0:
+       n /= p
+       e += 1
+      factors[p] = e
+     else:
+      break
+   if n ==1:
+    return factors
+  
+  d = shanks_div(n)
+  if d == n:
+    factors[d] = 1
+    return factors
+  else:
+    comb_factors(factors,shanks_factorize(d))
+    comb_factors(factors,shanks_factorize(n/d))
+    return factors
+    
+
+
+def shanks_div(n):
+ '''
+ Uses Shanks' Square Forms factorization to find a divisor of n.
+ '''
+ #Handle the special cases of n a square or prime.
+ sq = isqrt(n)
+ if sq*sq == n:
+   return sq
+ elif MillerRabin(n):
+   return n
+ else:
+  k = 1
+  while True:
+    r = shanks_trial(n,k)
+    if r >1 and r < n:
+      return r
+    else:
+     k += 1
+    if k > n:
+      raise Exception("Could not find a suitable multiple k in shanks_div.")
+ 
+def shanks_trial(n,k):
+ '''
+ One run of Shanks' algorithm trying to find a divisor of n,
+ and with the input multiple k.
+ '''
+ sq = isqrt(k*n) 
+ P = sq
+ Q0,Q1 = 1, k*n - P*P
+ i=1
+ while True:
+   q = isqrt(Q1)
+   if q*q == Q1 and not i%2:
+     b = (sq - P)/ q
+     P = b*q + P
+     Q0 = q
+     Q1 = (k*n-P*P)/Q0
+     break
+   i+=1
+   b = (sq+P)/Q1
+   P_new = b*Q1 - P
+   Q_new = Q0 + b*(P-P_new)
+   P = P_new
+   Q0 = Q1
+   Q1 = Q_new
+  
+ while True:
+   b = (sq+P)/Q1
+   P_new = b*Q1 - P
+   Q_new = Q0 + b*(P-P_new)
+   if P == P_new:
+     return gcd(P,n)
+   P = P_new
+   Q0 = Q1
+   Q1 = Q_new
+ 
+ 
+
+def factorize(n,primes):
   factors = []
   for p in primes:
    if p < n:
@@ -209,7 +315,7 @@ def factorise(n,primes):
    else:
     break
   if n > 1:
-   factors[n] = 1
+   factors.append([n,1])
   return factors
 
 #Generate all divisors of n given its prime factorization
@@ -273,12 +379,4 @@ def HarshadGen(a,c,mul=1,exact=True):
       yield y
      e*=x
  
-
-def isqrt(n):
-    x = n
-    y = (x + 1) // 2
-    while y < x:
-        x = y
-        y = (x + n // x) // 2
-    return x
 
