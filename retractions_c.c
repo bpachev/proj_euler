@@ -3,8 +3,8 @@
 #include <string.h>
 #include <math.h>
 
-//#define CAP 100000000000000LL
-#define CAP 10000000LL
+#define CAP 100000000000000LL
+//#define CAP 10000000LL
 
 typedef long long int LL;
 //#include <primes.h>

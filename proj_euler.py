@@ -1,4 +1,7 @@
 import numpy as np
+from random import randint
+from fractions import gcd as frac_gcd
+from math import floor,ceil
 
 def recur_mod(n ,T, I,mod = 10**8,matrix = False):
   '''
@@ -166,8 +169,16 @@ def egcd(a, b):
         return (g, x - (b // a) * y, y)
 
 def gcd(a,b):
+  print a,b
   return a if not b else gcd(b,a%b)
 
+def comp_gcd(a,b):
+  return a if not b else comp_gcd(b,comp_mod(a,b))
+
+def comp_mod(a,b):
+ q = a/b
+ q = floor(q.real+.5) + floor(q.imag+.5)*1j
+ return a -b*q
 
 def isqrt(n):
     x = n
@@ -358,6 +369,15 @@ def sofd_fill(n):
       d[j] += i
   return d
 
+#sieve on the number of divisors
+def nofd_fill(n):
+  d = np.ones(n,dtype=np.int64)
+  for i in xrange(2,n):
+    for j in xrange(i,n,i):
+      d[j] += 1
+  return d
+
+
 def test_cores(l):
  t = 1
  n = 1
@@ -394,4 +414,71 @@ def HarshadGen(a,c,mul=1,exact=True):
       yield y
      e*=x
  
+ 
+def prime_square_repr(p):
+   '''
+   INPUTS:
+   p -- a prime congruent to 1 mod 4
+   RETURNS:
+   (a,b) -- integers such that a^2 + b^2 = p
+   '''
+   if p%4 == 3:
+     raise Exception("Primes 3 mod 4 cannot be wriiten as the sum of 2 positive squares.")
+   if p == 2:
+     return [1,1]
+   e = (p-1) / 2   
+   while True:
+     k = randint(2,p-2)
+     if pow(k,e,p) == p-1:
+       break
+   k = pow(k,e/2,p)
+   d = comp_gcd(k+1j,p+0j)
+   if abs(d) ==1:
+     d = comp_gcd(k-1j,p+0j)
+   return sorted([abs(int(d.real)),abs(int(d.imag))])
+ 
+def two_square_repr(f,cache={}):
+  '''
+  f -- the prime factorization of a positive integer n
+  f is a dict mapping prime p to exponent e in the prime factorization.
+  cache -- cache[p] = (a,b) a^2 + b^2 = p, a and b nonegative integers.
+  Returns a list of ordered pairs 0<=a<=b with a^2 + b^2 = n.
+  If no representations exist, returns an empty list.
+  ''' 
+  mul = 1
+  reps = set([(0,1)])
+  for p in f:
+   e = f[p]
+   if p%4==3:
+    if e%2:
+     return set()
+    else:
+     mul *= p**e
+     continue
+   new_reps = set()
+   if p in cache:
+     rep = cache[p]
+   else:
+     rep = prime_square_repr(p)
+   
+   if p==2:
+     #if e is odd, we have some extra representations
+     mul *= 2**(e-e%2)
+     e=e%2
+          
+   for i in xrange(e):
+     new_reps = set()
+     for r in reps:
+       if not r[0]:
+         new_reps.add((r[1]*rep[0],r[1]*rep[1]))
+       else:
+         new_reps.add((abs(r[0]*rep[1]-r[1]*rep[0]),r[1]*rep[1]+r[0]*rep[0]))
+         new_reps.add(tuple(sorted([r[1]*rep[1]-r[0]*rep[0],r[0]*rep[1]+r[1]*rep[0]])))
+     reps = new_reps
+  
+  new_reps = []
+  for r in reps:
+    new_reps.append((mul*r[0],mul*r[1]))
+   
+  return new_reps
 
