@@ -37,6 +37,7 @@ def f_old(cap):
 
 FULL_MASK = 15
 mods = {1:(4,[1],1), 2:(8,[1,3],2), 3:(3,[1],4), 7:(7,[1,4,2],8)}
+#the third element is the bit representing having that property
 
 def repr_mask(n,res=False):
  global mods

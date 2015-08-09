@@ -169,7 +169,6 @@ def egcd(a, b):
         return (g, x - (b // a) * y, y)
 
 def gcd(a,b):
-  print a,b
   return a if not b else gcd(b,a%b)
 
 def comp_gcd(a,b):
@@ -377,6 +376,20 @@ def nofd_fill(n):
       d[j] += 1
   return d
 
+#Sieve on a general multiplicative function. Not mobius or anything which is one at primes.
+def generic_sieve_fill(n,f):
+  mask = np.ones(n,dtype=np.int64)
+  for i in xrange (2,n):
+    if mask[i] == 1:
+      e = 1
+      a = i
+      while a < n:
+        for j in xrange(a,n,a):
+          if (j/a) % i:
+            mask[j] = f(mask[j],i,e)
+        a *= i
+        e += 1
+  return mask
 
 def test_cores(l):
  t = 1
@@ -451,9 +464,9 @@ def two_square_repr(f,cache={}):
    e = f[p]
    if p%4==3:
     if e%2:
-     return set()
+     return []
     else:
-     mul *= p**e
+     mul *= p**(e/2)
      continue
    new_reps = set()
    if p in cache:
@@ -463,7 +476,7 @@ def two_square_repr(f,cache={}):
    
    if p==2:
      #if e is odd, we have some extra representations
-     mul *= 2**(e-e%2)
+     mul *= 2**((e-e%2)/2)
      e=e%2
           
    for i in xrange(e):
@@ -482,3 +495,66 @@ def two_square_repr(f,cache={}):
    
   return new_reps
 
+
+def sphere_points(r):
+  '''
+  Returns a list of all lattice points on a sphere of radius r centered at the origin.
+  '''
+  mul = 1
+  while r % 2 == 0:
+    mul *= 2
+    r /= 2
+  
+  primes = primes_and_mask(r)[0]
+  factors = [[] for i in xrange(r+1)]
+  for p in primes:
+    if p==2:
+      for i in xrange(r%2,r+1,2):
+        factors[i].append(2)
+    
+    else:
+      for i in xrange((p-r)%p,r+1,p):
+        factors[i].append(p)
+      for i in xrange(r%p,r+1,p):
+        factors[i].append(p)
+  
+  for i,f in enumerate(factors):
+    if i==r:
+     yield (r*mul,0,0)
+     yield (-r*mul,0,0)
+     continue
+  
+    t = (r-i)*(r+i)
+    fact = {}
+    for p in f:
+      if p in fact:
+        continue
+      fact[p] = 0
+      while t%p==0:
+       fact[p]+=1
+       t /= p
+    if t > 1:
+     fact[t] = 1
+    for rep in two_square_repr(fact):
+      if not rep[0]:
+       for j in xrange(2):
+        s = (-1)**j*mul
+        yield (i*mul,rep[0],s*rep[1])
+        yield (i*mul,s*rep[1],rep[0])
+        if i:
+          yield (-i*mul,rep[0],s*rep[1])
+          yield (-i*mul,s*rep[1],rep[0])
+        
+       continue
+      for j in xrange(4):
+        s1 = (-1)**(j&1)*mul
+        s2 = (-1)**(j/2)*mul
+        yield (i*mul,s1*rep[0],s2*rep[1])
+        if i:
+         yield (-i*mul,s1*rep[0],s2*rep[1])
+        if not rep[0] == rep[1]:
+          yield (i*mul,s1*rep[1],s2*rep[0])
+          if i:
+           yield (-i*mul,s1*rep[1],s2*rep[0])
+      
+  

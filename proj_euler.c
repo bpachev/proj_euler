@@ -227,3 +227,30 @@ void print_vec(int * v, int size)
   }
   printf("]\n");
 }
+
+LL * big_arr(LL size, LL init)
+{
+  LL s = size*sizeof(LL);
+  LL* arr = (LL*)malloc(s);
+  if (!arr)
+  {
+    die("Error allocating array of size %lld long longs to initial value of %lld.\n",size,init);
+  }
+  
+  memset(arr,0,s);
+  return arr;
+}
+
+void die(const char* msg, ...)
+{
+  va_list ap;
+  va_start(ap,msg);
+  
+  fprintf(stderr, "fatal_error: ");
+  vfprintf(stderr, msg, ap);
+  va_end(ap);
+  fputc('\n',stderr);
+  exit(1);
+}
+
+
