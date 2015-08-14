@@ -1,0 +1,3 @@
+lcm_count/Problem 379: ANSWER: 132314136838185
+Runtime 1: 9 min 11 s
+Improved to 2 min 0 s with beter caching.

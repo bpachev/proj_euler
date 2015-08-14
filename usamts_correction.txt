@@ -1,0 +1,24 @@
+  In the proof of the first part of the third problem of round #1, mathematical induction is used to show that a group of n people with heights evenly spaced 5 centimeters apart has Fn+1 almost-orderings, where Fn+1 is the nth fibbonacci number.
+  The base cases n=1 and n=2 are obviously true. However, there is a gross oversight in the inductive step.
+  Quote: "If the tallest person is not at the rightmost end of L, then he must be no more than 5 centimeters taller than any person to his right. But there is only 1 such person: the next-tallest person who is 5 centimeters shorter than the tallest person. So we
+must have the next-tallest person at the far right end of L, and the tallest person to his immediate left."
+
+Why must the next-tallest person be at the far right end of L? Couldn't the third-tallest person be to the right of the second-tallest person? In fact, if the tallest person is not at the end of the line, the second tallest person must be to his right, and either the third-tallest person is to the second tallest peron's right or the second tallest person is at the far right, and so on.
+
+As a hard counterexample, take the case n = 3, and assume heights of 120, 125, and 130.
+There are:
+130, 125, 120
+120, 130, 125,
+120, 125, 130,
+125, 120, 130
+
+A total of four almost orderings. And F4 = 3 which is not equal to four. Sorry.
+
+In fact, return to the recursive step and let P(n) denote the number of almost orderings of a group of n  people with heights evenly spaced 5 centimeters apart. There are n possible locations for the tallest person to be in the line. If he is in the rightmost, the other n-1 people have P(n-1) possible almost-orderings. If he is second from the right, then the next tallest person must be to his right, and the remaining n-2 people have P(n-2) almost orderings. If the tallest person is in the third place from the right, the next tallest person must be to his right, and the third-tallest person to the second-tallest's right, leaving the remaining n-3 people with P(n-3) almost-orderings.
+ Continuing this process and letting P(0) = 1 to handle the case when the tallest person is in the leftmost position and only one possible ordering exists, we see that P(n) = P(n-1) + P(n-2) + . . . + P(0).
+ It so happens that P(n) = 2^(n-1) n >= 0. Clearly, P(1) = 1  = 2^0, P(2) = 2 = 2^1. Now assume inductively that P(n) = 2^(n-1) and use the recursive relationship above.
+  P(n+1) = P(n) + . . . + P(0) = 2^(n-1) + 2^(n-2) + . . . + 2^0 + 1 = 2 ^ n. Q.E.D.
+ Because the solution to part 1 is wrong, the solution to part 2 is miles off track, unfortunately.
+
+My name is Benjamin Pachev. I submitted solutions to the round 1 problems. Please correct the published solution for problem 3. (And please don't take points from people who did not give the false answer of the fibbonacci sequence for this problem. Thanks!)
+ 

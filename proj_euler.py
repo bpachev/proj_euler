@@ -187,6 +187,10 @@ def isqrt(n):
         y = (x + n // x) // 2
     return x
 
+def is_square(n):
+  t = isqrt(n)
+  return t*t==n
+
 
 def prime_fact_ord(p,n):
   o = 0
@@ -426,7 +430,17 @@ def HarshadGen(a,c,mul=1,exact=True):
      for y in HarshadGen(a[i+1:],c/e,mul*e,False):
       yield y
      e*=x
- 
+
+def FareyGen(denom): 
+ a,b = 0,1
+ c,d = 1,denom
+ while True:
+  yield (c,d)
+  if c == denom-1 and d == denom:
+    break
+  t1,t2 = c,d
+  c,d = (denom + b)/d*c - a, ((denom + b)/d)*d - b
+  a,b = t1,t2
  
 def prime_square_repr(p):
    '''
