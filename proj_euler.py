@@ -220,6 +220,43 @@ def arithmetic(a,d,k):
  '''
  return (k*(2*a+d*(k-1))) / 2
 
+def mod_sqrt(n,p):
+ '''
+ Compute sqrt(n) mod p where p is a prime
+ '''
+ Q = p-1
+ if pow(n,Q/2,p) == p-1:
+   return 0
+ 
+ while True:
+  z = randint(2,Q)
+  if pow(z,Q/2,p) == p-1:
+    break
+ 
+ S = 0
+ while Q % 2 == 0:
+  Q /= 2
+  S += 1
+ c = pow(z,Q,p)
+ R = pow(n,(Q+1)/2,p)
+ M = S
+ t = pow(n,Q,p)
+ while not t == 1:
+  i = 0
+  temp = t
+  while not temp ==1:
+    i += 1
+    temp = (temp * temp) % p
+  
+  b = pow(c,pow(2,M-i-1,p-1),p)
+  R = (R*b) % p
+  t = (t*b*b)%p
+  c = (b*b) % p
+  M = i
+  
+ return R
+ 
+
 def comb_factors(f1,f2):
  for f in f2:
    if f in f1:

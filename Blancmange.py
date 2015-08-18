@@ -1,6 +1,7 @@
 from math import floor,pi
 from matplotlib import pyplot as plt
 import numpy as np
+from scipy.integrate import quad
 
 def blanc(x,it=60):
   if it <=0:
@@ -27,9 +28,15 @@ def int_blanc(x,it=60):
    # 1/2 < x <= 1
    return .5 - int_blanc(1-x,it-1)
 
-def plot_blanc(npoints=1000):
+def plot_blanc(npoints=1000,f=None):
   X = np.linspace(0,1,npoints)
   Y = np.empty(npoints)
+  if f is not None:
+   Y2 = np.empty(npoints)
+   for i in xrange(npoints):
+    Y2[i] = f(X[i])
+    plt.plot(X,Y2)
+
   for i in xrange(npoints):
    Y[i] = blanc(X[i])
   plt.plot(X,Y)
@@ -50,6 +57,5 @@ def bin_blanc_search(a,b,f,tol=1e-10):
 f = lambda x: .5 - (1./16 - (x-.25)**2)**.5
 a = bin_blanc_search(0,.25,f)
 b = .5
-print int_blanc(b)-int_blanc(a)
-
+print int_blanc(b)-int_blanc(a) - quad(f,a,b)[0],
 
