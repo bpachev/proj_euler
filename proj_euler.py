@@ -193,6 +193,9 @@ def is_square(n):
 
 
 def prime_fact_ord(p,n):
+  '''
+  The highest power of p that divides n!, p prime
+  '''
   o = 0
   a = p
   while a <= n:
@@ -220,12 +223,86 @@ def arithmetic(a,d,k):
  '''
  return (k*(2*a+d*(k-1))) / 2
 
+def factor_range(N,primes=False):
+ '''
+ Factor every number from 1 to N.
+ '''
+ factors = [{} for i in xrange(N+1)]
+ if primes:
+  p = []
+ for i in xrange(2,N+1):
+   if not len(factors[i]):
+     if primes:
+       p.append(i)
+     a = i
+     e = 1
+     while a <= N:
+       for x in xrange(a,N+1,a):
+         factors[x][i] = e
+       e += 1
+       a *= i
+ if primes:
+  return factors,p
+ return factors  
+
+def quad_factor_range(a,b,c,N):
+ '''
+ factor the quadratic a*x^2 + b*x + c for all integers from 0 to N (inclusive)
+ '''
+ d = b*b - 4*a*c
+ primes = primes_and_mask(N)[0]
+ n_arr = [a*i*i+b*i+c for i in xrange(N+1)]
+ factors = [{} for i in xrange(N+1)]
+ for p in primes:
+  if p == 2:
+    res = []
+    if not c%2:
+     res.append(0)    
+    if not (a+b+c)%2:
+     res.append(1)
+  elif not a%p:
+    if b%p:
+     res = [(-c*pow(b,p-2,p))%p]
+    elif c %p:     
+     continue
+    else:
+     res = range(p)
+  else:
+    sq = mod_sqrt(d,p)
+#    print d,p,sq
+    if not sq:
+      continue
+    a_inv = pow(2*a,p-2,p)
+    res = [((-b+sq)*a_inv)%p,((-b-sq)*a_inv)%p]
+#    print res
+  for q in xrange(0,N+1,p):
+    for r in res:
+     ind=r+q
+     if ind <= N:
+       temp = n_arr[ind]
+       if not temp:
+        continue
+       e=0
+       while temp%p==0: 
+        temp /=p
+        e += 1
+       factors[ind][p] = e
+       n_arr[ind]=temp
+  
+ for ind in xrange(N+1):
+   if n_arr[ind]==1:
+    continue
+   else:
+    comb_factors(factors[ind],shanks_factorize(n_arr[ind]))
+ return factors     
+
 def mod_sqrt(n,p):
  '''
  Compute sqrt(n) mod p where p is a prime
  '''
+ n = n % p
  Q = p-1
- if pow(n,Q/2,p) == p-1:
+ if not pow(n,Q/2,p) == 1:
    return 0
  
  while True:
@@ -545,7 +622,6 @@ def two_square_repr(f,cache={}):
     new_reps.append((mul*r[0],mul*r[1]))
    
   return new_reps
-
 
 def sphere_points(r):
   '''
