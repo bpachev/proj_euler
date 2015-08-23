@@ -4,7 +4,6 @@ from itertools import combinations
 cache = {}
 mcache = 20
 mods = [1] + [2*3**(n-n/2) for n in xrange(1,mcache+1)]
-print mods,len(mods)
 def argsort(seq):
     return sorted(range(len(seq)), key=seq.__getitem__)
 
@@ -16,17 +15,20 @@ def fibbo(n):
   f0,f1 = f1,f0+f1
  return f0
 
-def seq(x,prefix=False,pow2=None):
+def seq(x,prefix=False,pow2=None,verbose=False):
  s = [x]
  while not x == 1:
-   if prefix:
-    if x in pow2:
-     return s
    if x%2:
     x = 3*x+1
    else:
     x = x/2
-   s.append(x)
+   if prefix:
+    if x in pow2:
+     return s
+   if verbose:
+    print x
+   else:
+    s.append(x)
  return s
 
 def num_sols(x,k):
@@ -35,7 +37,7 @@ def num_sols(x,k):
  '''
  global mods,cache,mcache
  if k <0:
-  print k,x
+  print k,x,seq(x),len(seq(x))
  if not k:
    return 1
  if k <= mcache:
@@ -98,7 +100,11 @@ def shared_prefixes(l,k,flip_set):
   return shared_prefixes(map(f_inv,l),k-1,flip_set) + shared_prefixes(map(g_inv,l),k-1,flip_set)
  return shared_prefixes(map(f_inv,l),k-1,flip_set)    
  
-
+def next_collatz(x):
+ if x%2:
+  return 3*x+1
+ else:
+  return x/2
 
 def gen_flips(bound,n,pow2):
  flips = []
@@ -116,25 +122,34 @@ def gen_flips(bound,n,pow2):
        x,a,b = x/2,a/2,b/2
      # our start was on the finite side of the interesting point
      if i <= -b/(a-1.):
-#       print "FLIP at %d on %d" % (i,x)
-#       print seq(i)
-       flips.append((i,l))
+       if x in pow2:
+         break #not really part of the prefix
+       if l==n:         
+         x_next = next_collatz(x)
+         if x_next not in pow2:
+           break #prefix longer than n
+       if len(seq(i,True,pow2)) > n:
+        break
        flip_set.add(i)
- return flips,flip_set 
+ return flip_set 
+
+def bound(n):
+ min_upsteps = ceil(n*log(3)/log(6))
+ max_seq_0 = ((3./2)**(n-min_upsteps)-1.)/(3./2 - 1)
+ return int(floor(2.**min_upsteps/(2.**min_upsteps-3**(n-min_upsteps)) * max_seq_0))
+ 
 
 def solve(n):
  #Must substract one because the sequence of all downs is trivial
- base = fibbo(n)-1 #Prefix classes (defined by distinct up-down sequences)
- 
- min_upsteps = ceil(n*log(3)/log(6))
- max_seq_0 = ((3./2)**(n-min_upsteps)-1.)/(3./2 - 1)
- flip_bound = int(floor(2.**min_upsteps/(2.**min_upsteps-3**(n-min_upsteps)) * max_seq_0))
+ base = fibbo(n) #Prefix classes (defined by distinct up-down sequences)
+ flip_bound = max([bound(i) for i in xrange(1,n+1)])
  print "FLIP BOUND %d" % flip_bound
  
- pow2 = set([2**i for i in xrange(int(floor(log(flip_bound)/log(2)))+10)])
+ pow2 = set([2**i for i in xrange(int(floor(log(flip_bound)/log(2)))+100)])
    
+ flip_set = gen_flips(flip_bound,n,pow2)
+ print "Generated Flips"
  #Now, analyze these flips
- flips,flip_set = gen_flips(flip_bound,n,pow2)  
  prefix_hash = {} #maps prefix family to flips
  for flip in flip_set:
    fseq = seq(flip,True,pow2)
@@ -142,14 +157,15 @@ def solve(n):
      #Another flip start is in the sequence of flip, so it can be excluded from counting.
      continue
    ind = tuple(argsort(fseq))
+   print num_sols(flip,n-len(ind))
    base += num_sols(flip,n-len(ind))
    if ind in prefix_hash:
     prefix_hash[ind].append(flip)
    else:
     prefix_hash[ind] = [flip]
- print prefix_hash
- print "TOTAL %d FLIPS" % len(flips)
- print flips
+ print prefix_hash.values()
+ print "TOTAL %d FLIPS" % len(flip_set)
+ print flip_set
  for prefix in prefix_hash:
   l = len(prefix_hash[prefix])
   pl = len(prefix)
@@ -159,4 +175,4 @@ def solve(n):
         base += (-1)**(l-1) * shared_prefixes(c,pl)
  return base
 #the period of num_sols(n,k) appears to be 2*3**(k-k/2)
-print solve(60)
+print solve(90)
