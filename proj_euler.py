@@ -2,6 +2,7 @@ import numpy as np
 from random import randint
 from fractions import gcd as frac_gcd
 from math import floor,ceil
+from bisect import bisect_right
 
 def recur_mod(n ,T, I,mod = 10**8,matrix = False):
   '''
@@ -684,4 +685,26 @@ def sphere_points(r):
           if i:
            yield (-i*mul,s1*rep[1],s2*rep[0])
       
+
+def argsort(seq):
+  return sorted(range(len(seq)), key=seq.__getitem__)
+def init_fact(n):
+  fact = [1]
+  for i in xrange(1,n+1):
+     fact.append(i*fact[-1])
+  return fact
+
+#Find the nth permutation in S_f
+def fact_base(n,f):
+  rep = []
+  rem = range(1,f+1)
+  fact = init_fact(f-1) 
+  for i in xrange(f):
+   q = n/fact[-i-1]
+   n -= q * fact[-i-1]
+   rep.append(rem[q])
+   rem.remove(rem[q]) 
+  return rep
   
+  
+    
