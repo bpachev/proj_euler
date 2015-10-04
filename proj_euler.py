@@ -70,15 +70,18 @@ def safe_matrix_mul(A,B,mod):
     for j in xrange(A.shape[1]):
       res[:,i] = np.remainder((res[:,i] + np.remainder(B[j,i]*A[:,j],mod)),mod)
   return res
+
+start_primes = [2, 3, 5, 7, 11, 13, 17,37]
     
 def MillerRabin(n):
   '''
   For n < 341,550,071,728,321, this is a deterministic primality test
   '''
+  global start_primes
   n = int(n)
   if n == 1:
     return 0
-  primes =  [2, 3, 5, 7, 11, 13, 17,37]
+  primes = start_primes 
   for p in primes:
     if n == p:
       return 1
