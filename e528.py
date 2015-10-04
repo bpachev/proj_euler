@@ -27,6 +27,10 @@ def s(n,k,b,mod = 10**9+7):
      temp.append((t[0]+num,-t[1]))
    coeffs = temp 
  coeffs = sorted(coeffs)
+ ns = set([t[0] for t in coeffs])
+ if len(ns) < len(coeffs):
+  print "discrepancy on %d" % k
+ return 0
  coeffs.append((n,0))
  for curr,next in izip(coeffs[:-1],coeffs[1:]):
   init[-1] += curr[1]
@@ -41,7 +45,7 @@ def s(n,k,b,mod = 10**9+7):
  return init[-1]
 
 
-print s(1000,10,5)
-#print sum([s(10**k,k,k) for k in xrange(10,16)]) % (10**9+7)
+#print s(1000,10,5)
+print sum([s(10**k,k,k) for k in xrange(10,16)]) % (10**9+7)
   
   
