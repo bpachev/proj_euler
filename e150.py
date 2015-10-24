@@ -29,6 +29,7 @@ def find_min_triangle2(arr):
       s = 0
     if s < MIN:
       MIN = s
+      print "NEW MIN: %d" % s
    
   else:
    dec = csums[n-1][starti-1]  
@@ -40,21 +41,21 @@ def find_min_triangle2(arr):
       s = 0
     if s < MIN:
       MIN = s
+      print "NEW MIN: %d" % s
  return MIN
 
 
 def solve(n=1000):
  arr = np.zeros((n,n),dtype=int)
  mod = 2**20
- d = mod/2
+ d = 2**19
  t = 0
  for row in xrange(n):
   for col in xrange(row+1):
-    arr[row][col] = t
     t = (615949*t + 797807) % mod
-    t-=d
+    arr[row][col] = t-d
  return find_min_triangle2(arr)
 
-print solve(100)
+print solve(1000)
 
    	
