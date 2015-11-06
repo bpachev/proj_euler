@@ -24,7 +24,7 @@ for i in s:
   for c1 in xrange(i-max(d1,s1)+1):
    t31 = i-c1-s1
    t32 = i-c1-d1
-   t42 = i-t32-t1[2]-t2[2]
+   t42 = i-t32-t1[1]-t2[1]
    if t42 < 0:
     continue
    c2 =  (i-d2-s2+t31+t32)
