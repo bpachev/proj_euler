@@ -83,7 +83,7 @@ def path_len4(nbots=3,rinit=.999,tol=1e-6,l=1000):
  #print sol[-10:]
  print quad(lambda z : 1./zfunc(z,0),hinit,1.)
 
-path_len4(nbots=3)
+path_len4(nbots=827)
 
 def bisect_search(targ=10):
  nbots = 2

@@ -528,7 +528,7 @@ def HarshadGen(a,c,mul=1,exact=True):
  c -- a cap
  Generates all numbers that are divisible by all of the members of a, and less than cap
  Assumes the elements of a are coprime (otherwise duplicates will occur)
- TODO: if exact is set to False, then allow for numbers divisible by a subset of a, but not all members.
+ If exact is set to False, then allow for numbers divisible by a subset of a, but not all members.
  I.E if a=(2,3,5) then with exact=False, 6 is allowed, but not if exact=True  
  '''
  if exact:
