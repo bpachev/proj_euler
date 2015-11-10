@@ -1,7 +1,7 @@
 import numpy as np
 from math import acos,sin,cos,ceil
 from matplotlib import pyplot as plt
-from scipy.integrate import odeint
+from scipy.integrate import odeint,quad
 
 
 def path_len(nbots=3,rinit=.999,niter = 100,delta=2*np.pi/1000,d2=10,tol=1e-6):
@@ -74,14 +74,16 @@ def path_len4(nbots=3,rinit=.999,tol=1e-6,l=1000):
  plen = 0
  def zfunc(z,t):
   d = ct + (z*z)*(1-ct)
-  return z*((1-d)/(1+d))**.5
- dom = np.linspace(0,l,int(l*20))
- sol = odeint(zfunc,hinit,dom,mxstep=200000,atol=1e-10,rtol=1e-10)
- plt.plot(dom[-100:],sol[-100:])
- plt.show()
- print sol[-10:]
+  res = z*((1-d)/(1+d))**.5
+  return res
+# dom = np.linspace(0,l,int(l*100))
+ #sol = odeint(zfunc,hinit,dom,mxstep=200000,atol=1e-10,rtol=1e-10)
+ #plt.plot(dom[-100:],sol[-100:])
+ #plt.show()
+ #print sol[-10:]
+ print quad(lambda z : 1./zfunc(z,0),hinit,1.)
 
-path_len4(nbots=833,l=1000.5)
+path_len4(nbots=827)
 
 def bisect_search(targ=10):
  nbots = 2
