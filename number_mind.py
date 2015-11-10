@@ -4,7 +4,7 @@ gs = []
 with open(infile,"r") as f:
  for line in f:
    line = line.strip().split(" ")
-   gs.append([line[0],line[1][1]])
+   gs.append([line[0],int(line[1][1])])
 
-
+ 
 
