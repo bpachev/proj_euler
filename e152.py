@@ -1,5 +1,6 @@
 from proj_euler import primes_and_mask
-from itertools import combinations
+from itertools import combinations,product
+from fractions import Fraction as frac
 
 def find_feasible(n,p):
  '''
@@ -41,20 +42,28 @@ def solve(n):
  excluded_primes = []
  cand_psets = []
   #HACK (sorry about this)
- sets = {}
- sets[7] = find_feasible(n,7)
- sets[5] = find_feasible(n,5)
- sets[13] = find_feasible(n,13)
- for set_list in cand_psets:
+ sets = [7,5,13]
+ for s in sets: 
+  cand_psets.append(find_feasible(n,s))
+ for i,set_list in enumerate(cand_psets):
   nset_list = []
   for st in set_list:
    if 13 in st or 11 in st:
     continue
    else:
-    nset_list.append(st)
+    nset_list.append(set([sets[i]*el for el in st]))
   set_list = nset_list
-  print len(set_list)  
+  print len(cand_psets)  
+ 
+ fdict1 = {}
   
-  for set_comb in 
+ for set_comb in product(*cand_psets):
+   finit = frac(0,1)
+   for el in set_comb[0].union(set_comb[1].union(set_comb[2]))
+      finit += frac(1,el)
+   if finit in fdict1:
+    fdict1[finit] += 1
+   else:
+    fdict1[finit] = 1
   
 solve(80)
