@@ -241,6 +241,32 @@ LL * big_arr(LL size, LL init)
   return arr;
 }
 
+//the order of a prime in a factorial
+LL pfact_ord(LL n,LL p)
+{
+ LL res = 0;
+ while (n)
+ {
+  n/=p
+  res += n;
+ }
+ return res
+}
+
+//exponent of a prime p in the factorization of n
+//Or the highest power of p dividing n, in general
+LL p_ord(LL n, LL p)
+{
+ LL res = 0;
+ if (!n) return 0;
+ while (n%p)
+ {
+  res++;
+  n  /= p;
+ }
+ return res;
+}
+
 void die(const char* msg, ...)
 {
   va_list ap;
