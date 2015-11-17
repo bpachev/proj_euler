@@ -18,7 +18,8 @@ LL f(LL n, LL d)
   if (curr_d>d) res += p10[curr_exp];  
   else if (curr_d==d) res += (mod+1);
   res += curr_d*fp10[curr_exp];
-  mod = 10*mod+curr_d;
+ // printf("%lld %lld %lld\n",res,fp10[curr_exp],mod);
+  mod += curr_d*p10[curr_exp];
   curr_exp++;
  }
  return res;
