@@ -32,8 +32,8 @@ LL search(LL a,LL b,LL fa,LL fb,LL d)
  LL mid = (a+b)/2;
  LL fmid = f(mid,d);
  LL res = 0;
- if (mid == fmid) {res = mid; printf("found %llu\n",mid);}
- return mid + search(a,mid,fa,fmid,d) + search(mid,b,fmid,fb,d);
+ if (mid == fmid) {res = mid; /*printf("found %llu\n",mid);*/}
+ return res + search(a,mid,fa,fmid,d) + search(mid,b,fmid,fb,d);
 }
 
 int main()
@@ -41,10 +41,17 @@ int main()
  int i;
  p10[0] = 1;
  fp10[0] = 0;
- for (i=1;i<MAXPOW;i++)
+ for (i=1;i<=MAXPOW;i++)
  {
   p10[i] = 10*p10[i-1];
   fp10[i] = i*p10[i-1];
  }
- printf("search(0,10000000)=%llu\n",search(0,p10[11],0,fp10[11],1LL));
+ 
+ LL s = 0;
+ LL d;
+ for (d=1LL;d<10;d++)
+ {
+  s += search(0,p10[MAXPOW],0,fp10[MAXPOW],d);
+ }
+ printf("Sum: %llu\n",s);
 }
