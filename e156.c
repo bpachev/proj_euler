@@ -25,6 +25,17 @@ LL f(LL n, LL d)
  return res;
 }
 
+LL search(LL a,LL b,LL fa,LL fb,LL d)
+{
+ if (b-a<2) return 0;
+ if (fa>b||a>fb) return 0;
+ LL mid = (a+b)/2;
+ LL fmid = f(mid,d);
+ LL res = 0;
+ if (mid == fmid) {res = mid; printf("found %llu\n",mid);}
+ return mid + search(a,mid,fa,fmid,d) + search(mid,b,fmid,fb,d);
+}
+
 int main()
 {
  int i;
@@ -35,5 +46,5 @@ int main()
   p10[i] = 10*p10[i-1];
   fp10[i] = i*p10[i-1];
  }
- printf("f(%llu,1)=%llu\n",199981LL,f(199981LL,1LL));
+ printf("search(0,10000000)=%llu\n",search(0,p10[11],0,fp10[11],1LL));
 }
