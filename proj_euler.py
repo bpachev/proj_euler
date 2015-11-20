@@ -417,7 +417,7 @@ def shanks_trial(n,k):
      break
    i+=1
    if Q1 == 0:
-    print n,k,Q1,Q0,P,sq,i
+#    print n,k,Q1,Q0,P,sq,i
     if n%P==0:
      return P 
     else:
