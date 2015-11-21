@@ -1,7 +1,8 @@
 #include <vector>
 #include <iostream>
 #include <stdio.h>
-#define n 4
+#include <iomanip>
+#define n 15
 #define G (2*n+1)
 using namespace std;
 
@@ -68,7 +69,7 @@ void add_config()
    }
   }
  }
- if (temp.size() >= n)
+ if (temp.size() >= n+5)
  {
   configs.push_back(temp);
  }
@@ -108,7 +109,6 @@ int main()
  enum_configs(2,n-2,n);
  enum_configs(2,n-1,n+1);
 
- cout << configs.size() << endl;
  long long int sum = 0;
  for (i=1; i < 1<<n;i++)
  {
@@ -119,15 +119,14 @@ int main()
    int nbonds = 0;
    for (k=0;k<configs[j].size();k++)
    {
-    if (i==1&&j==0) cout << configs[j][k] << " " << (i&configs[j][k]) << endl; 
    
     if ((i&configs[j][k])==configs[j][k]) nbonds++;
    }
-   cout << nbonds << endl;
    if (nbonds>max) max = nbonds;
   }
-  cout << max << " " << i << endl;
   sum += max;
+  if ((i%(1<<(n-4)))==0) cout << "On " <<i<<" sum "<<sum<<endl;
  }
- cout << "Sum: " << sum << endl;;
+ cout << "Sum: " << sum << endl;
+ cout << "Average number of bonds: " << setprecision(n)<< (double)(sum)/(double (1<<n)) << endl;
 }
