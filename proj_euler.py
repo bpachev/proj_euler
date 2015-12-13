@@ -227,6 +227,11 @@ def arithmetic(a,d,k):
  '''
  return (k*(2*a+d*(k-1))) / 2
 
+def lin_sum(n):
+ return n*(n+1)/2
+def square_sum(n):
+ return n*(n+1)*(2*n+1) / 6
+
 def factor_range(N,primes=False):
  '''
  Factor every number from 1 to N.
@@ -417,7 +422,7 @@ def shanks_trial(n,k):
      break
    i+=1
    if Q1 == 0:
-    print n,k,Q1,Q0,P,sq,i
+#    print n,k,Q1,Q0,P,sq,i
     if n%P==0:
      return P 
     else:

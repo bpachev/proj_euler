@@ -5,7 +5,7 @@ unsigned long long int mod_pow(unsigned long long int base, unsigned long long i
     unsigned long long int result = 1;
     while (exp)
     {
-        if (exp % 2) 
+        if (exp % 2)
         {
           result = (result * base) % mod;
         }
@@ -22,7 +22,7 @@ LL smod_pow(LL base, LL exp, LL mod)
     LL result = 1;
     while (exp)
     {
-        if (exp % 2) 
+        if (exp % 2)
         {
           result = (result * base) % mod;
         }
@@ -69,7 +69,7 @@ LL EEA(LL a, LL b,LL * s_res,LL * t_res)
     bn = a;
     an = b;
   }
-  
+
   s_prev = 1;
   t_prev = 0;
   s = 0;
@@ -80,7 +80,7 @@ LL EEA(LL a, LL b,LL * s_res,LL * t_res)
   {
     r_old = r_next;
     t_old = t;
-    s_old = s;    
+    s_old = s;
     q = r_curr/r_next;
     r_next = r_curr%r_next;
     r_curr = r_old;
@@ -88,8 +88,8 @@ LL EEA(LL a, LL b,LL * s_res,LL * t_res)
     s = s_prev - q*s;
     s_prev = s_old;
     t_prev = t_old;
-  } 
- 
+  }
+
   if (a > b)
   {
     (*s_res) = s_prev;
@@ -100,7 +100,7 @@ LL EEA(LL a, LL b,LL * s_res,LL * t_res)
     (*s_res) = t_prev;
     (*t_res) = s_prev;
   }
-  
+
   return r_curr;
 }
 
@@ -121,19 +121,19 @@ int gcd(int a, int b)
 
 
 
-  
+
 LL big_bin_search(LL*a,LL l, LL u,LL n)
 {
   if (n < a[l])
   {
     return l+1;
   }
-  
+
   else if (n > a[u])
   {
     return u+1;
   }
-  
+
   else if (n == a[u]) return u+1;
   else if (n == a[l]) return l+1;
   else
@@ -142,7 +142,7 @@ LL big_bin_search(LL*a,LL l, LL u,LL n)
     LL mid = (u+l)/2;
     if (n == a[mid]) return mid + 1;
     if (n > a[mid]) return big_bin_search(a,mid,u,n);
-    else return big_bin_search(a,l,mid,n); 
+    else return big_bin_search(a,l,mid,n);
   }
 }
 
@@ -152,12 +152,12 @@ int bin_search(int*a,int l, int u,int n)
   {
     return l+1;
   }
-  
+
   else if (n > a[u])
   {
     return u+1;
   }
-  
+
   else if (n == a[u]) return u+1;
   else if (n == a[l]) return l+1;
   else
@@ -166,7 +166,7 @@ int bin_search(int*a,int l, int u,int n)
     int mid = (u+l)/2;
     if (n == a[mid]) return mid + 1;
     if (n > a[mid]) return bin_search(a,mid,u,n);
-    else return bin_search(a,l,mid,n); 
+    else return bin_search(a,l,mid,n);
   }
 }
 
@@ -236,16 +236,42 @@ LL * big_arr(LL size, LL init)
   {
     die("Error allocating array of size %lld long longs to initial value of %lld.\n",size,init);
   }
-  
+
   memset(arr,0,s);
   return arr;
+}
+
+//the order of a prime in a factorial
+LL pfact_ord(LL n,LL p)
+{
+ LL res = 0;
+ while (n)
+ {
+  n/=p;
+  res += n;
+ }
+ return res;
+}
+
+//exponent of a prime p in the factorization of n
+//Or the highest power of p dividing n, in general
+LL p_ord(LL n, LL p)
+{
+ LL res = 0;
+ if (!n) return 0;
+ while (n%p)
+ {
+  res++;
+  n  /= p;
+ }
+ return res;
 }
 
 void die(const char* msg, ...)
 {
   va_list ap;
   va_start(ap,msg);
-  
+
   fprintf(stderr, "fatal_error: ");
   vfprintf(stderr, msg, ap);
   va_end(ap);
