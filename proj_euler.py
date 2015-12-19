@@ -172,6 +172,23 @@ def egcd(a, b):
         g, y, x = egcd(b % a, a)
         return (g, x - (b // a) * y, y)
 
+def solve_lin_mod_eq(a,b,mod):
+ #Returns a solution to the linear equation ax=b (mod)
+ d,x,y = egcd(a,mod)
+ if d > 1:
+  if b%d:
+   #No solutions exist
+   return None
+  else:
+   return solve_lin_mod_eq(a/d,b/d,mod/d)
+ else:
+  return (x*b) % mod
+
+def mod_inv(a,mod):
+ #return the modular inverse of a mod d
+ d,x,y = egcd(a,mod) #so ax+mod*y equiv d mod a*mod
+ return x % mod if d==1 else False
+
 def gcd(a,b):
   return a if not b else gcd(b,a%b)
 
@@ -195,6 +212,13 @@ def is_square(n):
   t = isqrt(n)
   return t*t==n
 
+def pord(n,p):
+ e,d=0,1
+ while n%p == 0:
+  e+=1
+  d*=p
+  n/=p
+ return d,e 
 
 def prime_fact_ord(p,n):
   '''
