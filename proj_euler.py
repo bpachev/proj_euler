@@ -173,14 +173,15 @@ def egcd(a, b):
         return (g, x - (b // a) * y, y)
 
 def solve_lin_mod_eq(a,b,mod):
- #Returns a solution to the linear equation ax=b (mod)
+ #Returns all solutions to the linear equation ax=b (mod)
  d,x,y = egcd(a,mod)
  if d > 1:
   if b%d:
    #No solutions exist
    return None
   else:
-   return solve_lin_mod_eq(a/d,b/d,mod/d)
+   s = solve_lin_mod_eq(a/d,b/d,mod/d)
+   return [(s+i*(mod/d))%mod for i in xrange(d)] 
  else:
   return (x*b) % mod
 

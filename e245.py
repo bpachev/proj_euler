@@ -90,6 +90,7 @@ def m_search(n,k,m=1,phi=1,lowerInd=0):
 #        print q*m,q,m
    return s
  bound = int((n/m)**(1./(k+1)))
+ i=lowerInd+1
  for i,p in enumerate(primes[lowerInd+1:],lowerInd+1):
    if p > bound:
     break
