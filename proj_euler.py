@@ -71,6 +71,24 @@ def safe_matrix_mul(A,B,mod):
       res[:,i] = np.remainder((res[:,i] + np.remainder(B[j,i]*A[:,j],mod)),mod)
   return res
 
+def dict_to_transition_matrix(tdict,states,rev_dict=False):
+ #Takes a transition dictionary mapping states to possible outcomes
+ #currently doesn't support weights
+ k=states
+ rd={} #dict mapping states to the state number
+ for i,s in enumerate(k):
+  rd[s]=i
+ l=len(k)
+ T = np.zeros((l,l),dtype=np.int64)
+ for s1 in tdict:
+  i1=rd[s1]
+  for s2 in tdict[s1]:
+   T[rd[s2],i1] += 1
+ if rev_dict:
+  return T,rd
+ else:
+  return T
+
 start_primes = [2, 3, 5, 7, 11, 13, 17,37]
     
 def MillerRabin(n):
