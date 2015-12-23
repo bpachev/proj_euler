@@ -3,7 +3,7 @@
 #include <omp.h>
 
 #define MOD 1000000007
-#define MAT_SIZE 2816
+#define MAT_SIZE 200
 
 typedef long long int LL;
 
@@ -37,8 +37,8 @@ int main()
     {
         for(j=0; j<MAT_SIZE; j++)
         {
-            fscanf(arr, "%lld%*[^\n]%*c",&k[i][j]);
-            printf("%lld\n", k[i][j]);
+            fscanf(arr, "%d%*[^\n]%*c",&k[i][j]);
+            printf("%d\n", k[i][j]);
         }
     }
     

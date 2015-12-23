@@ -28,7 +28,7 @@ int mod_matmul2D(int m, int n, int p, LL** a, LL** b, LL** c,LL mod)
 int main()
 {
     FILE *arr;
-    LL k[MAT_SIZE][MAT_SIZE];
+    int k[MAT_SIZE][MAT_SIZE];
     arr =fopen("trans_mat.txt","r");
     int i,j;
      
@@ -37,8 +37,8 @@ int main()
     {
         for(j=0; j<MAT_SIZE; j++)
         {
-            fscanf(arr, "%lld%*[^\n]%*c",&k[i][j]);
-            printf("%lld\n", k[i][j]);
+            fscanf(arr, "%d%*[^\n]%*c",&k[i][j]);
+            printf("%d\n", k[i][j]);
         }
     }
     

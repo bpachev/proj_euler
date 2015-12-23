@@ -91,5 +91,4 @@ def solve(n,mod=10**9+7):
   np.savetxt(sys.argv[1],T,fmt="%d")
  return s%mod
   
-solve(20)
 
