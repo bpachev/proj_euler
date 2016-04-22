@@ -45,6 +45,37 @@ long long int isqrt(long long int n)
     return x;
 }
 
+//with an inital guess
+LL isqrt_init(LL n, LL init)
+{
+//  printf("isqrt_init(%lld, %lld)\n  ", n, init);
+  if (init <= 0) init = 1;
+  LL x, y;
+
+  if (init < n / init) init = n/init;
+    x = init + 1;
+    y = init;
+    while (y < x)
+    {
+        x = y;
+        y = (x + (n / x) ) / 2;
+    }
+
+/*  else
+  {
+    x = init - 1;
+    y = init;
+    while (y > x)
+    {
+        if (n == 4224) printf("%lld, %lld\n", x, y);
+        x = y;
+        y = (x + (n / x)) / 2;
+    }
+
+  }*/
+
+  return x;
+}
 
 LL modinv(LL n, LL mod)
 {
@@ -278,5 +309,3 @@ void die(const char* msg, ...)
   fputc('\n',stderr);
   exit(1);
 }
-
-

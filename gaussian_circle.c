@@ -27,9 +27,12 @@ LL fast_gaussian_circle(LL r)
   LL bound1 = isqrt(n/2);
   LL bound2 = isqrt(r*r - bound1*bound1);
   LL inc = bound2 * cutoff(r, r-bound2);
+  LL last = r;
   for (LL i = 1; i < r - bound2; i++)
   {
-    inc += cutoff(r,i);
+    last = isqrt_init(2*r*i - i*i, last);
+//    if (last != isqrt(2*r*i - i*i)) printf("%lld, said %lld real %lld\n", 2*r*i - i*i, last, isqrt(2*r*i - i*i));
+    inc += last;
     //inc += (r - i) * (cutoff(r, i) - cutoff(r, i-1));
   }
 
@@ -42,7 +45,9 @@ LL fast_gaussian_circle(LL r)
 int main()
 {
 //  for (LL i =0;i < 1000; i++) printf("%lld ",gaussian_circle(i)-fast_gaussian_circle(i));
-//  LL n = 10000000;
-  printf("real %llu\n", gaussian_circle(n));
-//  printf("fast %llu\n", fast_gaussian_circle(n));
+  LL n = 10000000;
+  //printf("real %llu\n", gaussian_circle(n));
+  printf("fast %llu\n", fast_gaussian_circle(n));
+//  for (int i=0; i < n ; i++) if (isqrt_init(n, i+1) != isqrt(n)) printf("uh-oh %d",i);
+//  printf("sqrt(%lld) = %lld", n, isqrt_init(n, (n+1)/2));
 }

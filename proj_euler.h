@@ -7,9 +7,11 @@ typedef long long int LL;
 typedef unsigned long long int ULL;
 
 
-unsigned long long int mod_pow(unsigned long long int base, unsigned long long int exp,unsigned long long int mod);
+unsigned long long int mod_pow(unsigned long long int base, unsigned long long int exp, unsigned long long int mod);
 LL smod_pow(LL base, LL exp, LL mod);
 long long int isqrt(long long int n);
+LL isqrt_init(LL n, LL init);
+
 int digit_sum(int n, int base);
 LL big_digit_sum(LL n, LL base);
 LL big_bin_search(LL*a,LL l, LL u,LL n);
