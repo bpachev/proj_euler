@@ -50,6 +50,7 @@ LL isqrt_init(LL n, LL init)
 {
 //  printf("isqrt_init(%lld, %lld)\n  ", n, init);
   if (init <= 0) init = 1;
+  if (n == 0) return 0;
   LL x, y;
 
   if (init < n / init) init = n/init;
@@ -268,7 +269,7 @@ LL * big_arr(LL size, LL init)
     die("Error allocating array of size %lld long longs to initial value of %lld.\n",size,init);
   }
 
-  memset(arr,0,s);
+  for (int i = 0; i < size; i++) arr[i] = init;
   return arr;
 }
 
