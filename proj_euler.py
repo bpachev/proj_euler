@@ -90,7 +90,7 @@ def dict_to_transition_matrix(tdict,states,rev_dict=False):
   return T
 
 start_primes = [2, 3, 5, 7, 11, 13, 17,37]
-    
+
 def MillerRabin(n):
   '''
   For n < 341,550,071,728,321, this is a deterministic primality test
@@ -99,7 +99,7 @@ def MillerRabin(n):
   n = int(n)
   if n == 1:
     return 0
-  primes = start_primes 
+  primes = start_primes
   for p in primes:
     if n == p:
       return 1
@@ -199,7 +199,7 @@ def solve_lin_mod_eq(a,b,mod):
    return None
   else:
    s = solve_lin_mod_eq(a/d,b/d,mod/d)
-   return [(s+i*(mod/d))%mod for i in xrange(d)] 
+   return [(s+i*(mod/d))%mod for i in xrange(d)]
  else:
   return (x*b) % mod
 
@@ -219,6 +219,28 @@ def comp_mod(a,b):
  q = floor(q.real+.5) + floor(q.imag+.5)*1j
  return a -b*q
 
+def binary_search(f, target, lower, upper= None):
+    """
+    Fins min(target) with f(target) >=
+    Params:
+    f -- a function mapping ints to ints
+    """
+    if upper is None:
+        upper = lower
+        while f(upper) < target:
+            upper *= 2
+    if f(upper) == target: return upper
+    while upper - lower > 1:
+        x = (upper + lower) /2
+        res = f(x)
+        if res >= target:
+            upper = x
+        elif res < target:
+            lower = x
+    return upper
+
+
+
 def isqrt(n):
     x = n
     y = (x + 1) // 2
@@ -226,6 +248,8 @@ def isqrt(n):
         x = y
         y = (x + n // x) // 2
     return x
+
+
 
 def is_square(n):
   t = isqrt(n)
@@ -237,7 +261,8 @@ def pord(n,p):
   e+=1
   d*=p
   n/=p
- return d,e 
+ return d,e
+
 
 def prime_fact_ord(p,n):
   '''
@@ -264,7 +289,7 @@ def arithmetic(a,d,k):
  a -- starting member of arithmetic progression
  d -- difference between consecutive terms
  k -- number of terms
- 
+
  RETURN:
  sum of arithmetic progression
  '''
@@ -295,7 +320,7 @@ def factor_range(N,primes=False):
        a *= i
  if primes:
   return factors,p
- return factors  
+ return factors
 
 def quad_factor_range(a,b,c,N):
  '''
@@ -309,13 +334,13 @@ def quad_factor_range(a,b,c,N):
   if p == 2:
     res = []
     if not c%2:
-     res.append(0)    
+     res.append(0)
     if not (a+b+c)%2:
      res.append(1)
   elif not a%p:
     if b%p:
      res = [(-c*pow(b,p-2,p))%p]
-    elif c %p:     
+    elif c %p:
      continue
     else:
      res = range(p)
@@ -335,18 +360,18 @@ def quad_factor_range(a,b,c,N):
        if not temp:
         continue
        e=0
-       while temp%p==0: 
+       while temp%p==0:
         temp /=p
         e += 1
        factors[ind][p] = e
        n_arr[ind]=temp
-  
+
  for ind in xrange(N+1):
    if n_arr[ind]==1:
     continue
    else:
     comb_factors(factors[ind],shanks_factorize(n_arr[ind]))
- return factors     
+ return factors
 
 def mod_sqrt(n,p):
  '''
@@ -356,12 +381,12 @@ def mod_sqrt(n,p):
  Q = p-1
  if not pow(n,Q/2,p) == 1:
    return 0
- 
+
  while True:
   z = randint(2,Q)
   if pow(z,Q/2,p) == p-1:
     break
- 
+
  S = 0
  while Q % 2 == 0:
   Q /= 2
@@ -376,15 +401,15 @@ def mod_sqrt(n,p):
   while not temp ==1:
     i += 1
     temp = (temp * temp) % p
-  
+
   b = pow(c,pow(2,M-i-1,p-1),p)
   R = (R*b) % p
   t = (t*b*b)%p
   c = (b*b) % p
   M = i
-  
+
  return R
- 
+
 
 def comb_factors(f1,f2):
  for f in f2:
@@ -398,7 +423,7 @@ def shanks_factorize(N,primes=None):
   factors = {}
   if primes is not None:
    cap = int(n**.25)
-   for p in primes:    
+   for p in primes:
     if p > cap:
      break
     if p < n:
@@ -412,7 +437,7 @@ def shanks_factorize(N,primes=None):
       break
    if n ==1:
     return factors
-  
+
   d = shanks_div(n)
   if d == n:
     factors[d] = 1
@@ -421,7 +446,7 @@ def shanks_factorize(N,primes=None):
     comb_factors(factors,shanks_factorize(d))
     comb_factors(factors,shanks_factorize(n/d))
     return factors
-    
+
 
 
 def shanks_div(n):
@@ -445,13 +470,13 @@ def shanks_div(n):
     if k > n:
       print MillerRabin(n),n
       raise Exception("Could not find a suitable multiple k in shanks_div.")
- 
+
 def shanks_trial(n,k):
  '''
  One run of Shanks' algorithm trying to find a divisor of n,
  and with the input multiple k.
  '''
- sq = isqrt(k*n) 
+ sq = isqrt(k*n)
  P = sq
  Q0,Q1 = 1, k*n - P*P
  i=1
@@ -467,7 +492,7 @@ def shanks_trial(n,k):
    if Q1 == 0:
 #    print n,k,Q1,Q0,P,sq,i
     if n%P==0:
-     return P 
+     return P
     else:
      return 1
    b = (sq+P)/Q1
@@ -476,7 +501,7 @@ def shanks_trial(n,k):
    P = P_new
    Q0 = Q1
    Q1 = Q_new
-  
+
  while True:
    b = (sq+P)/Q1
    P_new = b*Q1 - P
@@ -486,8 +511,8 @@ def shanks_trial(n,k):
    P = P_new
    Q0 = Q1
    Q1 = Q_new
- 
- 
+
+
 
 def factorize(n,primes):
   factors = []
@@ -519,7 +544,7 @@ def divisors(factors):
             f[i] = 0
             i += 1
             if i >= nfactors:
-                return  
+                return
 
 def tot_fill(n):
   tot = np.arange(n,dtype=np.int64)
@@ -577,7 +602,7 @@ def HarshadGen(a,c,mul=1,exact=True):
  Generates all numbers that are divisible by all of the members of a, and less than cap
  Assumes the elements of a are coprime (otherwise duplicates will occur)
  If exact is set to False, then allow for numbers divisible by a subset of a, but not all members.
- I.E if a=(2,3,5) then with exact=False, 6 is allowed, but not if exact=True  
+ I.E if a=(2,3,5) then with exact=False, 6 is allowed, but not if exact=True
  '''
  if exact:
   p=1
@@ -585,7 +610,7 @@ def HarshadGen(a,c,mul=1,exact=True):
    p*=x
   for y in HarshadGen(a,c/p,p,False):
     yield y
-  
+
  else:
   yield mul
   for i,x in enumerate(a):
@@ -597,7 +622,7 @@ def HarshadGen(a,c,mul=1,exact=True):
       yield y
      e*=x
 
-def FareyGen(denom): 
+def FareyGen(denom):
  a,b = 0,1
  c,d = 1,denom
  while True:
@@ -607,7 +632,7 @@ def FareyGen(denom):
   t1,t2 = c,d
   c,d = (denom + b)/d*c - a, ((denom + b)/d)*d - b
   a,b = t1,t2
- 
+
 def prime_square_repr(p):
    '''
    INPUTS:
@@ -619,7 +644,7 @@ def prime_square_repr(p):
      raise Exception("Primes 3 mod 4 cannot be wriiten as the sum of 2 positive squares.")
    if p == 2:
      return [1,1]
-   e = (p-1) / 2   
+   e = (p-1) / 2
    while True:
      k = randint(2,p-2)
      if pow(k,e,p) == p-1:
@@ -629,7 +654,7 @@ def prime_square_repr(p):
    if abs(d) ==1:
      d = comp_gcd(k-1j,p+0j)
    return sorted([abs(int(d.real)),abs(int(d.imag))])
- 
+
 def two_square_repr(f,cache={}):
   '''
   f -- the prime factorization of a positive integer n
@@ -637,7 +662,7 @@ def two_square_repr(f,cache={}):
   cache -- cache[p] = (a,b) a^2 + b^2 = p, a and b nonegative integers.
   Returns a list of ordered pairs 0<=a<=b with a^2 + b^2 = n.
   If no representations exist, returns an empty list.
-  ''' 
+  '''
   mul = 1
   reps = set([(0,1)])
   for p in f:
@@ -653,12 +678,12 @@ def two_square_repr(f,cache={}):
      rep = cache[p]
    else:
      rep = prime_square_repr(p)
-   
+
    if p==2:
      #if e is odd, we have some extra representations
      mul *= 2**((e-e%2)/2)
      e=e%2
-          
+
    for i in xrange(e):
      new_reps = set()
      for r in reps:
@@ -668,11 +693,11 @@ def two_square_repr(f,cache={}):
          new_reps.add((abs(r[0]*rep[1]-r[1]*rep[0]),r[1]*rep[1]+r[0]*rep[0]))
          new_reps.add(tuple(sorted([r[1]*rep[1]-r[0]*rep[0],r[0]*rep[1]+r[1]*rep[0]])))
      reps = new_reps
-  
+
   new_reps = []
   for r in reps:
     new_reps.append((mul*r[0],mul*r[1]))
-   
+
   return new_reps
 
 def sphere_points(r):
@@ -683,26 +708,26 @@ def sphere_points(r):
   while r % 2 == 0:
     mul *= 2
     r /= 2
-  
+
   primes = primes_and_mask(r)[0]
   factors = [[] for i in xrange(r+1)]
   for p in primes:
     if p==2:
       for i in xrange(r%2,r+1,2):
         factors[i].append(2)
-    
+
     else:
       for i in xrange((p-r)%p,r+1,p):
         factors[i].append(p)
       for i in xrange(r%p,r+1,p):
         factors[i].append(p)
-  
+
   for i,f in enumerate(factors):
     if i==r:
      yield (r*mul,0,0)
      yield (-r*mul,0,0)
      continue
-  
+
     t = (r-i)*(r+i)
     fact = {}
     for p in f:
@@ -723,7 +748,7 @@ def sphere_points(r):
         if i:
           yield (-i*mul,rep[0],s*rep[1])
           yield (-i*mul,s*rep[1],rep[0])
-        
+
        continue
       for j in xrange(4):
         s1 = (-1)**(j&1)*mul
@@ -735,7 +760,7 @@ def sphere_points(r):
           yield (i*mul,s1*rep[1],s2*rep[0])
           if i:
            yield (-i*mul,s1*rep[1],s2*rep[0])
-      
+
 
 def argsort(seq):
   return sorted(range(len(seq)), key=seq.__getitem__)
@@ -749,13 +774,10 @@ def init_fact(n):
 def fact_base(n,f):
   rep = []
   rem = range(1,f+1)
-  fact = init_fact(f-1) 
+  fact = init_fact(f-1)
   for i in xrange(f):
    q = n/fact[-i-1]
    n -= q * fact[-i-1]
    rep.append(rem[q])
-   rem.remove(rem[q]) 
+   rem.remove(rem[q])
   return rep
-  
-  
-    
