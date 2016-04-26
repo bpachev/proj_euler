@@ -58,7 +58,7 @@ def combine_gozinta(a, b):
         for j in xrange(1,b_len+1):
             for k in xrange(max(i,j), i+j+1):
                 #k choose i,  then i choose j+i-k
-                target[k-1] += C(k,i) * C(i, j+i-k) * a[i-1]*a[j-1]
+                target[k-1] += C(k,i) * C(i, j+i-k) * a[i-1]*b[j-1]
     return target
 
 for i in xrange(200):
@@ -78,11 +78,12 @@ for c in classes:
     if g > bound:
         continue
 #    print g, c
-    rep = shanks_factorize(g).values()
+    fact = shanks_factorize(g)
+    rep = fact.values()
     trunc_rep = sorted(rep)[::-1]
     for i in xrange(len(rep), len(c)):
         trunc_rep.append(0)
     if trunc_rep == c:
-        print g
+        print g, fact, trunc_rep, c
         tot += g
 print "Total "+str(tot)
