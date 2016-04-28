@@ -52,11 +52,15 @@ def C(n,k):
     return comb(n,k,True)
 
 #a is a list of coefficients sum (r+i choose r) P(i) from i = 0 to n
-def sum_comb_poly(coeffs, n, r):
-    degree = len(coeffs()) - 1
+def sum_comb_poly(P, d, n, r):
+    coeffs = P.coeffs()
+    degree = P.degree()
     if degree:
-        q_coeffs = coeffs[:-1]
-        return coeffs[-1] * C(r+n+1, r+1) + (r+1) * sum_comb_poly(d, q, n-1, r+1)
+        q, rem= div(P, d)
+        if degree > 1:
+            qex = q.as_expr()
+            q = Poly(qex.subs(d, d+1))
+        return rem(0) * C(r+n+1, r+1) + (r+1) * sum_comb_poly(q, d, n-1, r+1)
     else:
         return coeffs[0] * C(r+n+1, r+1)
 
@@ -65,6 +69,9 @@ def slow_sum_comb_poly(P, n, r):
     for i in xrange(n+1):
         tot += C(r+i,i) * P(i)
     return tot
+
+
+
 
 def slow2(n):
     tot = eq_cases(n)
@@ -81,12 +88,18 @@ def slow2(n):
     d = symbols('d')
     p2_poly = Poly((n-d)*(n-d+2)*(n-d+7))
     p1_poly = Poly((n-d+3)*(n-d))
-    print div(p2_poly,d)
-    print p1_poly
+    exp3 = (d-1)*(n-d+1)*(n-d+1+2)*(n-d+1+7)
+#    exp3.subs(d, d+1)
+    p3_poly = Poly(exp3)
+#    print div(p2_poly,d)
+#    print p1_poly
+    inc += sum_comb_poly(p1_poly, d, n-1, n-3) - sum_comb_poly(p1_poly, d, 0, n-3)
+    inc += (sum_comb_poly(p2_poly, d, n-1, n-3) - sum_comb_poly(p2_poly, d, 0, n-3)) * (n-3) / 6
+    inc -= (sum_comb_poly(p3_poly, d, n, n-4) - sum_comb_poly(p3_poly, d, 1, n-4)) / 6
 
-    for d2 in xrange(1,n):
+#    for d2 in xrange(2,n+1):
         #difference in position
-        inc += C(n+d2-3, n-3) * ( p1_poly(d2) + (n-3) * p2_poly(d2)/6) - C(n+d2-3, n-4) * (d2 * p2_poly(d2)/6)
+#        inc +=  - C(n+d2-4, n-4) * (p3_poly(d2)/6)
 
     return tot + 2*inc
 
@@ -94,6 +107,10 @@ def slow2(n):
 def centaur(n):
     tot = eq_cases(n)
 
-
+#d = symbols('d')
 print slow_centaur(4)
 print slow2(10)
+#P = poly(d*d*d+3*d*d+d+1)
+
+#print sum_comb_poly(P, d, 3,3)
+#print slow_sum_comb_poly(P, 3,3)
