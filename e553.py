@@ -23,12 +23,24 @@ def double_power_set(n):
 def C(n,k):
     #build cache tables
     cache = np.zeros((n+1, k+1), dtype=int)
+    exact = np.zeros(n+1, dtype=int)
     for j in xrange(1, n+1):
         #all possible graphs
         cache[j,1] = cache[j-1,1] + double_power_set(j) - double_power_set(j-1)
         for i in xrange(0, j-1):
-            cache[j,1] -= (comb(j-1, i) * (double_power_set(j-1-i)-1) * (cache[i+1,1]-(i+1)*cache[i,1])) % mod
+            mul = comb(j-1, i) * (double_power_set(j-1-i)-1) % mod
+            cache[j,1] -= (mul * (exact[i+1])) % mod
             cache[j,1] %= mod
-#    for i in xrange(2,k+1):
+        exact[j] = cache[j,1]
+        for s in xrange(1,j):
+            exact[j] -= comb(j,s)*exact[s]
+            exact[j] %= mod
+        for components in xrange(2,k+1):
+            cache[j, components] = cache[j-1, components]
+            for i in xrange(0, j):
+                mul = comb(j-1, i) * cache[j-1-i,components-1] % mod
+                cache[j,components] += (mul * (exact[i+1])) % mod
+                cache[j,components] %= mod
+
     return cache[n,k]
-print C(3,1)
+print C(1000,10)
