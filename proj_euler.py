@@ -771,9 +771,11 @@ def init_fact(n):
   return fact
 
 #assumes modulus is prime, otherwise some inverses won't exist
-def mod_fact_cache(mod):
-    fact, ifact = np.ones(mod,dtype=int), np.ones(mod,dtype=int)
-    for i in xrange(1,mod):
+def mod_fact_cache(mod, max_n = None):
+    if max_n is None:
+        max_n = mod
+    fact, ifact = np.ones(max_n,dtype=int), np.ones(max_n,dtype=int)
+    for i in xrange(1,max_n):
         if i % 10**6==0: print i
         fact[i] = (fact[i-1] * i) % mod
         ifact[i] = (ifact[i-1] * pow(i, mod-2, mod)) % mod
