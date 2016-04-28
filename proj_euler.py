@@ -770,6 +770,16 @@ def init_fact(n):
      fact.append(i*fact[-1])
   return fact
 
+#assumes modulus is prime, otherwise some inverses won't exist
+def mod_fact_cache(mod):
+    fact, ifact = np.ones(mod,dtype=int), np.ones(mod,dtype=int)
+    for i in xrange(1,mod):
+        if i % 10**6==0: print i
+        fact[i] = (fact[i-1] * i) % mod
+        ifact[i] = (ifact[i-1] * pow(i, mod-2, mod)) % mod
+    return fact, ifact
+
+
 #Find the nth permutation in S_f
 def fact_base(n,f):
   rep = []
