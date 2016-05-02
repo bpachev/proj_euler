@@ -2,7 +2,7 @@ import proj_euler as pe
 import numpy as np
 
 mod = 10**9+7
-max_n = 10**4
+max_n = 10**4+10
 fact, ifact = pe.mod_fact_cache(mod, max_n = max_n)
 
 def comb(n,k):
@@ -25,6 +25,8 @@ def C(n,k):
     cache = np.zeros((n+1, k+1), dtype=int)
     exact = np.zeros(n+1, dtype=int)
     for j in xrange(1, n+1):
+        if j%100 == 0:
+            print "on "+str(j)
         #all possible graphs
         cache[j,1] = cache[j-1,1] + double_power_set(j) - double_power_set(j-1)
         for i in xrange(0, j-1):
@@ -43,4 +45,5 @@ def C(n,k):
                 cache[j,components] %= mod
 
     return cache[n,k]
-print C(1000,10)
+n,k = 10**4, 10
+print "C(%d,%d) = %d." % (n,k, C(n,k))
