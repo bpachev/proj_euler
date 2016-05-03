@@ -29,6 +29,21 @@ def matrix_mod_exp(n,T,I,mod):
     n /= 2
   return Accum
 
+def mat_exp(n,T, I=None):
+    if I is None:
+        I = np.eye(T.shape[0], dtype = T.dtype)
+    Accum = I
+    if n < 0:
+        raise ValueError("Negative matrix exponent not allowed.")
+    while n:
+        if n % 2:
+          Accum = T.dot(Accum)
+        T = T.dot(T)
+        n /= 2
+    return Accum
+
+
+
 def safe_matrix_exp(n,T,I,mod):
   Accum = I
   while n:
