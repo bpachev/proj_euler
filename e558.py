@@ -30,32 +30,30 @@ def R(n):
 
 r = 1.465571231876768026656731
 log_r = np.log(r)
-
+#exps = set()
 def repr_size(n):
-    print "Called with " +str(n)
+#    print "Called with " +str(n)
     max_pow = int(np.log(n)/np.log(r))
     curr = np.zeros(3, dtype = int)
     curr[1] = n
     terms = 1
-    temp = np.copy(R(max_pow))
+    temp = R(max_pow)
     curr -= temp
-    exp = max_pow
+    exp = max_pow-3
 #    print exp, temp, curr, rep_positive(curr)
     while not rep_zero(curr):
-        exp -=1
         temp = R(exp)
-        curr -= temp
-#        if not rep_positive(curr) == slow_rep_positive(curr): print curr, exp
-#        if exp < -100: return 0
-        if not rep_positive(curr):
-            curr += temp
-        else:
+        if rep_positive(curr-temp):
+            curr -= temp
             terms += 1
-            exp -= 2
-    print exp
+            exp -= 3
+        else:
+            exp -= 1
+#    print exp
+#    exps.add(exp)
     return terms
 
-eps = 1
+eps = 1e-4
 def r_less(a, b):
     abs_a = abs(a)
     # is r less than b + sqrt(a) ?
@@ -89,8 +87,8 @@ def slow_rep_positive(rep):
         #then the polynomial is always positive or negative for r real, with sign given by the leading coefficient
         if d < 0:
             return a >= 0
-        D = frac(d, 4*a*a)
-        C = frac(-b, 2*a)
+#        D = frac(d, 4*a*a)
+#        C = frac(-b, 2*a)
         r1, r2 = None, None
 #        m1 = (D + 3*C*C - 2*C)
         #m1 = frac(d+3*b*b+4*a*b, 4*a*a)
@@ -129,10 +127,15 @@ def rep_zero(rep):
     return rep[0] == 0 and rep[1] == 0
 
 def solve(n):
-    print 1+sum([repr_size(j*j) for j in xrange(2,n+1)])
+    tot = 1
+    for j in xrange(2, n+1):
+        if j%5000 == 0: print j/5000, tot
+        tot += repr_size(j*j)
+    return tot
 #print repr_size(1087849)
-solve(10000)
+print solve(5*10**6)
 #test = np.array([ 9 ,60 ,73])
 #print rep_positive(test)
 #print test.dot(np.array([r*r, r, 1]))
 #print slow_rep_positive(test)
+#print min(exps)
