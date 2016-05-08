@@ -2,11 +2,13 @@ import numpy as np
 import proj_euler as pe
 import numpy.linalg as la
 from fractions import Fraction as frac
+from sys import argv
+
+outfile = open(argv[1], "w")
 
 T_forward = np.array([[1, 0 , 1],[1,0,0],[0,1,0]], dtype = int)
 #just the inverse of the one above :)
 T_back = np.array([[0,1,0], [0,0,1], [1,-1,0]] , dtype = int)
-
 init = np.ones(3, dtype = int)
 cache = {}
 def R(n):
@@ -40,16 +42,17 @@ def repr_size(n):
     temp = R(max_pow)
     curr -= temp
     exp = max_pow-3
-#    print exp, temp, curr, rep_positive(curr)
+#    print max_pow
     while not rep_zero(curr):
         temp = R(exp)
-        if rep_positive(curr-temp):
+        if slow_rep_positive(curr-temp):
+    #        print exp
             curr -= temp
             terms += 1
             exp -= 3
         else:
             exp -= 1
-#    print exp
+    outfile.write(str(exp)+"\n")
 #    exps.add(exp)
     return terms
 
@@ -126,14 +129,23 @@ def rep_positive(rep):
 def rep_zero(rep):
     return rep[0] == 0 and rep[1] == 0
 
-def solve(n):
-    tot = 1
-    for j in xrange(2, n+1):
-        if j%5000 == 0: print j/5000, tot
+def solve(n, start_ind = 2, start_tot = 1):
+    tot = start_tot
+    for j in xrange(start_ind, n+1):
         tot += repr_size(j*j)
+        msg = "On %d, total %d" % (j, tot)
+        outfile.write(str(msg)+"\n")
+        if j%5000 == 0: print msg
     return tot
-#print repr_size(1087849)
-print solve(5*10**6)
+
+def out(msg):
+    outfile.write(str(msg)+"\n")
+    print msg
+
+#print repr_size(1012423**2)
+out(solve(5*10**6, start_ind = 1012423, start_tot = 40590809))
+#for j in xrange(2,50):
+#    print repr_size(j)
 #test = np.array([ 9 ,60 ,73])
 #print rep_positive(test)
 #print test.dot(np.array([r*r, r, 1]))
