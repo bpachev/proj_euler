@@ -1,5 +1,5 @@
 import numpy as np
-from proj_euler import matrix_mod_exp
+import proj_euler as pe
 from itertools import product
 
 def num_factor_sieve(n):
@@ -44,9 +44,15 @@ def factor_num_to_nimber(n):
       next = i
       break
    l.append(next)
-  
-  return l
-   
-print factor_num_to_nimber(23)
 
+  return l
+
+def compute_nimber(class):
+    pass
+
+def count_representatives(class, ):
+    pass
+
+#print factor_num_to_nimber(23)
+print pe.prime_equivalences(10**7)[0]
 #solve(30,10**12,987654321)

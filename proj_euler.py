@@ -1,7 +1,9 @@
 import numpy as np
 from random import randint
 from fractions import gcd as frac_gcd
-from math import floor,ceil
+from math import floor,ceil, log
+from copy import copy
+
 from bisect import bisect_right
 
 def recur_mod(n ,T, I,mod = 10**8,matrix = False):
@@ -795,6 +797,41 @@ def mod_fact_cache(mod, max_n = None):
         fact[i] = (fact[i-1] * i) % mod
         ifact[i] = (ifact[i-1] * pow(i, mod-2, mod)) % mod
     return fact, ifact
+
+
+def prime_equivalences(bound):
+    """
+    A prime equivalence class is the sorted tuple of the exponents of the prime factors
+    So 5 is in the class (1), 6 in (1,1) and 18 in (2,1)
+    This function finds all equivalence classes with representatives less than bound
+    """
+
+    primecap = int(log(bound) **2 / log(10) ) + 10
+    primes = primes_and_mask(primecap)[0]
+    temp = bound
+    max_primes = 0
+    for i, p in enumerate(primes):
+        temp /= p
+        if not temp:
+            max_primes = i
+            break
+
+    res = []
+    state = [0 for i in xrange(max_primes)]
+    def recur(pind, bound, exp_bound):
+        if bound == 0: return
+        if exp_bound == 0: return
+        if pind >= max_primes: return
+        for exp in xrange(1, exp_bound+1):
+            state[pind] = exp
+            new_bound = bound / primes[pind]**exp
+            if new_bound <= 0: break
+            res.append(copy(state))
+            recur(pind+1, new_bound, exp)
+        #cleanup
+        state[pind] = 0
+    recur(0, bound, 100)
+    return res, primes[:max_primes]
 
 
 #Find the nth permutation in S_f
