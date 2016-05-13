@@ -55,10 +55,14 @@ def count_representatives(c, n, pcounts, primes, excluded=set(), upper = None):
     if n == 0: return 0
     if len(c) == 1:
         if not c[0]: return 1
-        n = int(n**(1./c[0]))
+        new_n = int(n**(1./c[0]))
+        if not new_n**c[0] <= n: print "Too big"
+        elif not (new_n+1)**c[0] > n:
+            new_n += 1
+
         if upper is not None:
-            n = min(upper, n)
-        return pcounts[n] - sum([1 if el <= n else 0 for el in excluded])
+            new_n = min(upper, new_n)
+        return pcounts[new_n] - sum([1 if el <= new_n else 0 for el in excluded])
 
 
     tot = 0
@@ -90,7 +94,7 @@ def mex(l):
 
 if __name__ == "__main__":
     #print factor_num_to_nimber(23)
-#    n = 10
+#    n = 32
 #    k = 5
     n = 10**7
     k = 10**12
@@ -121,7 +125,7 @@ if __name__ == "__main__":
     nnimbers = max(nimber_cache.values())
     nbits = len(bin(nnimbers - 1))-1
     nstates = 2**nbits
-    print nstates, nnimbers, nbits
+#    print nstates, nnimbers, nbits, nimber_cache.values()
     init = np.zeros(nstates, dtype = np.int64)
     for c in nimber_cache:
         first_zero = len(c)
@@ -129,11 +133,15 @@ if __name__ == "__main__":
             if el == 0:
                 first_zero = j
                 break
-        init[nimber_cache[c]] += count_representatives(c[:first_zero], n, pcounts, primes)
+        inc = count_representatives(c[:first_zero], n, pcounts, primes)
+        print inc, c, nimber_cache[c]
+        init[nimber_cache[c]] += inc
+    print init, np.sum(init)
     T = np.zeros((nstates, nstates), dtype = np.int64)
     for start in xrange(nstates):
         for transition in xrange(nstates):
-            T[transition^start, start] = init[transition]
+            T[transition^start, start] += init[transition]
+#    print T
     rems = []
     for mod in (m1,m2):
         res = pe.matrix_mod_exp(k-1, T, init, mod)
