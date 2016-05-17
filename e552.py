@@ -21,4 +21,4 @@ def solve(n):
         mod_prods[i:] %= primes[i:]
         mask[a_mods==0] = True
     print np.sum(primes[mask])
-solve(50)
+solve(300000)
