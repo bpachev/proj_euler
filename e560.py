@@ -5,6 +5,7 @@ def nimber_exp(n, init, mod):
     T = init.copy()
     exp = n-1
     while exp:
+        print "on "+str(exp)
         if exp % 2:
             init  = combine_counts(T, init, mod)
         T = combine_counts(T, T, mod)
@@ -25,13 +26,14 @@ def solve(n, k, mod = 10**9+7):
                 mask[j] = min(mask[j], i)
             else:
                 mask[j] = i
+    print "Starting exponentiation."
     bcounts = np.bincount(mask)
     nimber_counts[2:len(bcounts)] = bcounts[2:]
     nimber_counts[1] = 1
     nimber_counts[0] = bcounts[1]
     nimber_counts = nimber_exp(k, nimber_counts, mod)
 
-    print nimber_counts[0]
+    print "Solution " + str(nimber_counts[0])
 
 def slow_combine_counts(a, b, mod):
     n = a.size
@@ -44,11 +46,13 @@ def slow_combine_counts(a, b, mod):
 
 def combine_counts(a, b, mod):
     n = a.size
-    if n <= 2:
-        return slow_combine_counts(a,b, mod)
-    pivot = n/2
+    if n == 2:
+        return np.array([a[0]*b[0]+a[1]*b[1], a[0]*b[1]+b[0]*a[1]]) % mod
+    elif n == 1:
+        return (a*b) % mod
     a %= mod
     b %= mod
+    pivot = n/2
     u = combine_counts(a[:pivot]+a[pivot:], b[:pivot]+b[pivot:], mod)
     v = combine_counts(a[:pivot]-a[pivot:], b[:pivot]-b[pivot:], mod)
 
@@ -57,4 +61,4 @@ def combine_counts(a, b, mod):
     res[pivot:] = ((u - v) * pe.mod_inv(2, mod)) % mod
     return res
 
-solve(10**3, 10**3)
+solve(10**7, 10**7)

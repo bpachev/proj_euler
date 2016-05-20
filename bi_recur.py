@@ -19,6 +19,22 @@ def x_k(k,mod = pow(2,60)):
 
   return k_coeff % mod
 
+def half_A(n,k, lower, upper):
+    res = A(n, 2*k, lower, upper)
+    if res <= upper:
+        res = max(res, A(n, 2*k+1, max(lower, res), upper))
+    return res
+
+mod = 2**60
+def A(n,k, lower = 0, upper = mod):
+    if k >= n: return x_k(k)
+    elif k >= (n-1) / 2: return mod - 1 - max(A(n, 2*k), A(n, 2*k+1))
+    else:
+        first = half_A(n, 2*k, lower, upper)
+        if first >= lower:
+            first = min(first, half_A(n, 2*k+1, lower, min(upper, first)))
+        return first
+print A(10**12, 1)
 def range_winner(x1,x2,cutoff,base = 0,mod = pow(2,60)):
   '''
   Assume the bottom of the tree is maxes.
@@ -69,9 +85,8 @@ def range_max(x1,x2):
       i_min = i
   return mx, mn, bin(i_min), bin(ix)
 
-print range_max(2**40,2**40 + 8)
-print range_max(2**40 + 8,2**40 + 2*8)
+#print range_max(2**40,2**40 + 8)
+#print range_max(2**40 + 8,2**40 + 2*8)
 
 
 #print x_k(range_winner(2**17,2**18,10**5)[0])
-
