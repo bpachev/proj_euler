@@ -94,7 +94,7 @@ def gen_states(side_len):
             s[1] += b2
         states.append(s)
 #        print comb, s
-        print_state(side_len,s)
+#        print_state(side_len,s)
 
     return states
 
@@ -105,11 +105,22 @@ def solve(n, k):
         return 0
 
     side_len = min(n,k)
-    ntransitions = max(n,k)-2
+    ntransitions = max(n,k)
+    mask = 2**side_len - 1
 
     states = [tuple(s) for s in gen_states(side_len)]
     trans = indexed_transitions(side_len)
-    tdict = {}
+    tdict = {s:[] for s in states}
+
+    for s in states:
+        for t in trans[mask^s[0]]:
+            assert t[0]|s[0] == mask and t[0]&s[0] == 0
+            if t[1]&s[1]: continue
+
+            new_s = (t[1]|s[1], t[2])
+            tdict[s].append(new_s)
+
+#    print tdict
     scounts = {s:0 for s in states}
     scounts[(0,0)] = 1
     for i in xrange(ntransitions):
@@ -118,4 +129,10 @@ def solve(n, k):
             num_reps = scounts[s]
             if not num_reps:
                 continue
-            
+            for s2 in tdict[s]:
+                new_scounts[s2] += num_reps
+        scounts = new_scounts
+#    print scounts
+    return scounts[(0,0)]
+
+print solve(9,12)
