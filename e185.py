@@ -56,25 +56,20 @@ def find_sol(s,g,i,l):
     el[1]+=1
  return False
 
-
 def row_sol(s,g,depth):
-    global restrictions
+    global restrictions, guesses, clues, big_inds
     for i, el in enumerate(s):
         if el >=0:
             if restrictions[i][el]:
-#                print s
-#                print restrictions
-#                print i, el
                 return
 
     if depth == len(g):
         print "".join(map(str,s))
-#        print restrictions
         return
 
     #iterate over all combinations of clues for g
-    nclues = g[depth][1]
-    guess = g[depth][0]
+    nclues = clues[depth]
+    guess = guesses[depth]
     if not nclues:
         for i, el in enumerate(guess):
             restrictions[i][el] += 1
@@ -82,15 +77,16 @@ def row_sol(s,g,depth):
         for i, el in enumerate(guess):
             restrictions[i][el] -= 1
 
-    inds = []
-    oinds = []
-    for i, el in enumerate(s):
-        if el < 0:
-            if not restrictions[i,guess[i]]: inds.append(i)
-        elif el == g[depth][0][i]:
-            nclues -= 1
-            oinds.append(i)
+    # for i, el in enumerate(s):
+    #     if el < 0:
+    #         if not restrictions[i,guess[i]]: inds.append(i)
+    #     elif el == guess[i]:
+    #         nclues -= 1
+    #         oinds.append(i)
 
+    inds = big_inds[np.logical_and(s < 0, restrictions[big_inds, guess] == 0)]
+    oinds = big_inds[s == guess]
+    nclues -= len(oinds)
     if nclues < 0:
         return
     # elif nclues == 0:
@@ -102,22 +98,34 @@ def row_sol(s,g,depth):
     #     return
 
     for c in combinations(inds,nclues):
-        bad = False
-        for el in range(len(guess)):
-            if el not in c and el not in oinds:
-                restrictions[el][guess[el]] += 1
-        for el in c:
-            s[el] = guess[el]
+        if depth < 1:
+            print depth*" " + str(c)
+
+        cinds =  np.array(c, dtype = int)
+        mask = np.ones(len(guess), dtype=int)
+        mask[cinds] = 0
+        mask[oinds] = 0
+        rinds = big_inds[mask > 0]
+        #rinds = []
+        #for el in range(len(guess)):
+        #    if el not in c and el not in oinds:
+        #        rinds.append(el)
+        #rinds = np.array(rinds)
+        restrictions[rinds, guess[rinds]] += 1
+        s[cinds] = guess[cinds]
         row_sol(s, g, depth+1)
-        for el in c: s[el] = -1
-        for el in range(len(guess)):
-            if el not in c and el not in oinds:
-                restrictions[el][guess[el]] -= 1
+        s[cinds] = -1
+        restrictions[rinds, guess[rinds]] -= 1
 
 
 res = parse_infile()
-print res
+#print res
 l=len(res[0][0])
-s=[-1]*l
+#s=[-1]*l
+s = -np.ones(l, dtype = int)
+guesses = np.array([res[depth][0] for depth in range(len(res))])
+clues = np.array([res[depth][1] for depth in range(len(res))], dtype = int)
+#print s, guesses, clues
 restrictions = np.zeros((l,10), dtype = int)
+big_inds = np.arange(l, dtype=int)
 row_sol(s,res,0)
