@@ -55,6 +55,8 @@ def defense_dist(unit_list):
     return dist_list
 
 def battle_odds(attackers, defenders):
+    attackers = sorted(attackers, key = lambda unit: -unit.cost)
+    defenders = sorted(defenders, key = lambda unit: unit.cost)
     adist = attack_dist(attackers)
     ddist = defense_dist(defenders)
     na = len(attackers)
@@ -84,11 +86,16 @@ def battle_odds(attackers, defenders):
     print "Draw", init[0]
     attack_odds = np.array([init[states_to_inds[(nattackers, 0)]] for nattackers in xrange(1,na+1)])
     defend_odds = np.array([init[states_to_inds[(0, ndefenders)]] for ndefenders in xrange(1, nd+1)])
+    acosts = np.array([unit.cost for unit in attackers])
+    dcosts = np.array([unit.cost for unit in defenders])
     print "Attackers win", np.sum(attack_odds)
     print attack_odds
+    print "Expected losses", np.sum(acosts) - attack_odds.dot(np.cumsum(acosts))
     print "Defenders win", np.sum(defend_odds)
     print defend_odds
+    print "Expected losses", np.sum(dcosts) - defend_odds.dot(np.cumsum(dcosts))
 
-attacking =  [ART]+[INF]
+
+attacking =  [ART]+[INF]+[BOMB]
 defending = 2*[INF]
 battle_odds(attacking, defending)
