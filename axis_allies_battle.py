@@ -16,6 +16,12 @@ INF = unit(1,2,3,"Infantry")
 ART = unit(2,2,4,"Artillery")
 FIGHT = unit(3,4,10, "Fighter")
 BOMB = unit(4,1,12, "Bomber")
+DUMMY = unit(0,0,0, "")
+BATTLESHIP = [unit(4,4,20,"Battleship"), DUMMY]
+CRUISER = unit(3,3,12,"Cruiser")
+DESTROYER = unit(2,2,8, "Destroyer")
+CARRIER = unit(1,2,14, "Carrier")
+SUB = unit(2,1,6, "Submarine")
 
 def attack_dist(unit_list):
     narts = 0
@@ -56,7 +62,7 @@ def defense_dist(unit_list):
 
 def battle_odds(attackers, defenders):
     attackers = sorted(attackers, key = lambda unit: -unit.cost)
-    defenders = sorted(defenders, key = lambda unit: unit.cost)
+    defenders = sorted(defenders, key = lambda unit: -unit.cost)
     adist = attack_dist(attackers)
     ddist = defense_dist(defenders)
     na = len(attackers)
@@ -79,7 +85,6 @@ def battle_odds(attackers, defenders):
                     T[j,i] += adist[nattack-1][ahits] * ddist[ndefend-1][dhits]
     init = np.zeros(T.shape[0])
     init[-1] = 1
-    evals, evecs = la.eig(T)
     for i in xrange(20):
         init = T.dot(init)
 #    print init
@@ -90,12 +95,15 @@ def battle_odds(attackers, defenders):
     dcosts = np.array([unit.cost for unit in defenders])
     print "Attackers win", np.sum(attack_odds)
     print attack_odds
-    print "Expected losses", np.sum(acosts) - attack_odds.dot(np.cumsum(acosts))
+    print "Expected losses", np.sum(acosts) - attack_odds.dot(np.cumsum(acosts)), "from " , np.sum(acosts)
     print "Defenders win", np.sum(defend_odds)
     print defend_odds
-    print "Expected losses", np.sum(dcosts) - defend_odds.dot(np.cumsum(dcosts))
+    print "Expected losses", np.sum(dcosts) - defend_odds.dot(np.cumsum(dcosts)), "from ", np.sum(dcosts)
 
 
-attacking =  [ART]+[INF]+[BOMB]
-defending = 2*[INF]
+defending =  10*[INF]+5*[ART]
+attacking = 3*[INF]+3*[ART]+4*[TANK]
+#attacking =  3*BATTLESHIP
+#defending = 6*[DESTROYER]+[CRUISER]
+
 battle_odds(attacking, defending)
