@@ -3,7 +3,7 @@ import proj_euler as pe
 
 d = 2017
 #n = 10**11
-n = 10**6
+n = 10**11
 #we want 6*k+2 <= n
 first_power_primes = np.load("e565primes.npy")
 for p in first_power_primes:
@@ -33,7 +33,7 @@ for power in xrange(2, max_power):
 #        if p%2017 == 2016 and po: continue
         if ((exp*p-1)/(p-1)) % 2017 == 0:
             plist.append((exp, p))
-            print plist[-1]
+#            print plist[-1]
 
 plist = sorted(plist)
 def sum_excluded(n, divs, maximum = None):
@@ -51,7 +51,7 @@ def sum_candidates(n, excluded=[], maximum = None):
     if maximum is None: maximum = n+1
     maximum = min(n+1, maximum)
     tot = 0
-    if len(excluded) > 1: print n, excluded, sum_excluded(n, sorted(excluded)), maximum
+#    if len(excluded) > 1: print n, excluded, sum_excluded(n, sorted(excluded)), maximum
     l = len(excluded)
     if l: tot += (-1)**(l+1) * sum_excluded(n, sorted(excluded))
     for exp, p in plist:
@@ -60,10 +60,10 @@ def sum_candidates(n, excluded=[], maximum = None):
         tot += exp*sum_candidates(n/exp, excluded, maximum = exp)
         excluded.pop()
     return tot
-print sum_candidates(10**9)
+print sum_candidates(n)
 tot = 0
-n = 10**9
-for exp, p in plist:
-    if exp > n: break
-    tot += exp * (n/exp+1)*(n/exp) /2 - exp**2 * (n/exp**2+1)*(n/exp**2) /2
-print tot
+#n = 10**9
+#for exp, p in plist:
+#    if exp > n: break
+#    tot += exp * (n/exp+1)*(n/exp) /2 - exp**2 * (n/exp**2+1)*(n/exp**2) /2
+#print tot
