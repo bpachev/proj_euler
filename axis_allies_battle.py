@@ -101,9 +101,9 @@ def battle_odds(attackers, defenders):
     print "Expected losses", np.sum(dcosts) - defend_odds.dot(np.cumsum(dcosts)), "from ", np.sum(dcosts)
 
 
-defending =  2*[TANK]+2*[ART]
-attacking = 2*[INF]+3*[ART]+1*[FIGHT]+2*[TANK]
-#attacking =  3*BATTLESHIP
-#defending = 6*[DESTROYER]+[CRUISER]
+defending =  4*[TANK]+3*[ART]
+attacking = 4*[INF]+3*[ART]+3*[FIGHT]+[TANK]+[BOMB]
+#attacking =  BATTLESHIP+2*[FIGHT]+2*[DESTROYER]+[CRUISER]
+#defending = BATTLESHIP+2*[FIGHT]+[CARRIER]+[SUB]
 
 battle_odds(attacking, defending)

@@ -845,3 +845,12 @@ def fact_base(n,f):
    rep.append(rem[q])
    rem.remove(rem[q])
   return rep
+
+def fibb(cap):
+    """
+    Return all fibbonacci numbers < cap
+    """
+    fib = [0,1]
+    while fib[-1]<=cap:
+        fib.append(fib[-1]+fib[-2])
+    return fib
