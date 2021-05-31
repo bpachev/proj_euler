@@ -50,6 +50,33 @@ def score_roll(roll):
             options.append((score+s, dice_used+d))
     return options
 
+class Policy:
+    """Represents a single policy
+    """
+
+    def __init__(self, utilities, distributions, objective_func):
+        self.utilities = utilities
+        self.distributions = distributions
+        self.objective_func = objective_func
+
+    def should_stop(self, score, dice):
+        return self.objective_func({score: 1}) >= self.utilities[(score, dice)]
+
+    def best_choice(self, score, dice, choices):
+        util = -np.inf
+        choice = None
+        for points, dice_used in choices:
+            k = (score+points, dice-dice_used if dice > dice_used else 6)
+            print(k, self.utilities[k])
+            if self.utilities[k] > util:
+                choice, util = (points, dice_used), self.utilities[k]
+
+        return choice
+
+    def choice_from_roll(self, score, roll):
+        options = score_roll(roll)
+        return self.best_choice(score, len(roll), options)
+
 class FarkleBot:
     """Because I can't beat my brother-in-law with luck, I'm going to do it with MATH.
 
@@ -90,7 +117,7 @@ class FarkleBot:
         # Compute policy to get to 500 points in the best way possible
         policies["take_500"] = self.computePolicy(func)
         policies["max_score"] = self.computePolicy(lambda x: sum(s*p for s,p in x.items()))
-        print(policies["take_500"][1][(0,6)][0])
+        return policies
 
     def computePolicy(self, objective_func):
         """Compute a custom policy
@@ -165,7 +192,7 @@ class FarkleBot:
 
 
             unsolved_states = next_states
-        return utilities, distributions
+        return Policy(utilities, distributions, objective_func)
 
 
     @staticmethod
@@ -222,3 +249,10 @@ if __name__ == "__main__":
     #    print(sorted(test_roll, score_roll(test_roll))
     #FarkleBot.summarizeTransitions()
     bot = FarkleBot()
+    policy = bot.policies["max_score"]
+    print(policy.choice_from_roll(100,(5,5,4,6)))
+    for dice_remaining in range(1,6):
+        for score in range(0, 10**4, 50):
+            if policy.should_stop(score, dice_remaining):
+                print(score, dice_remaining)
+                break
