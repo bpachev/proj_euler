@@ -54,20 +54,24 @@ class Policy:
     """Represents a single policy
     """
 
-    def __init__(self, utilities, distributions, objective_func):
+    def __init__(self, utilities, distributions, objective_func=None, stop_utility=None):
         self.utilities = utilities
         self.distributions = distributions
-        self.objective_func = objective_func
+        if objective_func is not None:
+            self.stop_utility = {score: objective_func({score: 1}) for score in range(0, 10**4, 50)}
+        elif stop_utility is not None:
+            self.stop_utility = stop_utility
+        else:
+            raise ValueError("No way to determine stopping utility!")
 
     def should_stop(self, score, dice):
-        return self.objective_func({score: 1}) >= self.utilities[(score, dice)]
+        return self.stop_utility[score] >= self.utilities[(score, dice)]
 
     def best_choice(self, score, dice, choices):
         util = -np.inf
         choice = None
         for points, dice_used in choices:
             k = (score+points, dice-dice_used if dice > dice_used else 6)
-            print(k, self.utilities[k])
             if self.utilities[k] > util:
                 choice, util = (points, dice_used), self.utilities[k]
 
@@ -76,6 +80,33 @@ class Policy:
     def choice_from_roll(self, score, roll):
         options = score_roll(roll)
         return self.best_choice(score, len(roll), options)
+
+    def to_json(self):
+        """Convert data into a JSON-serializable format
+        """
+
+        return {"utilities": list(self.utilities.items()), "distributions": list(self.distributions.items()),
+            "stop_utility": self.stop_utility}
+
+    def simulateTurn(self):
+        score, dice = 0, 6
+        while not self.should_stop(score, dice):
+            roll = np.random.randint(1, 7, size=dice)
+            choice = self.choice_from_roll(score, roll)
+            # FARKLE!
+            if choice is None:
+                return 0
+            score += choice[0]
+            dice -= choice[1]
+            if not dice: dice = 6
+        return score
+
+    @staticmethod
+    def from_json(data):
+        for key in ["utilities", "distributions"]:
+            data[key] = {tuple(k): v for k, v in data[key]}
+        data["stop_utility"] = {int(k): v for k, v in data["stop_utility"].items()}
+        return Policy(**data)
 
 class FarkleBot:
     """Because I can't beat my brother-in-law with luck, I'm going to do it with MATH.
@@ -108,7 +139,8 @@ class FarkleBot:
             self.policies = self.computeDefaultPolicies()
         else:
             with open(policyFile, "r") as fp:
-                self.policies = json.load(policies)
+                data = json.load(fp)
+                self.policies = {name: Policy.from_json(v) for name, v in data.items()}
 
     def computeDefaultPolicies(self):
         policies = {}
@@ -194,6 +226,31 @@ class FarkleBot:
             unsolved_states = next_states
         return Policy(utilities, distributions, objective_func)
 
+    def savePolicies(self, outfile="policies.json"):
+        data = {name: p.to_json() for name, p in self.policies.items()}
+        with open(outfile, "w") as fp:
+            json.dump(data, fp)
+
+    def addPolicy(self, name, func):
+        self.policies[name] = self.computePolicy(func)
+
+    def comparePolicies(self, name1, name2, games=100):
+        p1, p2 = self.policies[name1], self.policies[name2]
+        wins = np.zeros(games)
+        turns_arr = np.zeros(games)
+        for g in range(games):
+            score1 = score2 = 0
+            turns = 0
+            while True:
+                if score1 >= 1e4: break
+                score1 += p1.simulateTurn()
+                if score2 >= 1e4: break
+                score2 += p2.simulateTurn()
+                turns += 1
+            wins[g] = score1 > score2
+            turns_arr[g] = turns
+
+        print(np.mean(wins), np.mean(turns_arr), np.median(turns_arr))
 
     @staticmethod
     def computeTransitions(outfile="farkle_transitions.json"):
@@ -248,11 +305,17 @@ if __name__ == "__main__":
     #for test_roll in [(1,2,3,4,5,6), (2,2,4,4,5,5), (1,1,1,1,2,5), (2,2,2,1,5,3), (4,4,6,6,3,2)]:
     #    print(sorted(test_roll, score_roll(test_roll))
     #FarkleBot.summarizeTransitions()
-    bot = FarkleBot()
-    policy = bot.policies["max_score"]
-    print(policy.choice_from_roll(100,(5,5,4,6)))
-    for dice_remaining in range(1,6):
-        for score in range(0, 10**4, 50):
-            if policy.should_stop(score, dice_remaining):
-                print(score, dice_remaining)
-                break
+    #bot = FarkleBot()
+    #bot.savePolicies()
+    bot = FarkleBot(policyFile="policies.json")
+    #for cutoff in [800, 1100, 2000]:
+    #    func = lambda dist: sum(prob if score >= cutoff else 0 for score, prob in dist.items())
+    #    bot.addPolicy(f"take_{cutoff}", func)
+    #bot.savePolicies()
+    bot.comparePolicies("take_800", "take_500", games=1000)
+    #policy = bot.policies["max_score"]
+    #for dice_remaining in range(1,6):
+    #    for score in range(0, 10**4, 50):
+    #        if policy.should_stop(score, dice_remaining):
+    #            print(score, dice_remaining)
+    #            break
